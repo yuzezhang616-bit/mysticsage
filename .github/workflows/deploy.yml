@@ -25,13 +25,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm cache clean --force
+          npm install --no-package-lock --no-audit --no-fund
 
       - name: Build static site
-        run: npm run build
+        run: ./node_modules/.bin/next build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
