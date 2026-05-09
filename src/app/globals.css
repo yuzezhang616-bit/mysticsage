@@ -27,46 +27,36 @@ body {
   overflow-x: hidden;
 }
 
-/* ========== 星空背景 ========== */
-.starry-bg {
+/* ========== 视频背景 ========== */
+.video-bg {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
   overflow: hidden;
 }
 
-.star {
+.bg-video {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background: #fff;
-  border-radius: 50%;
-  animation: twinkle var(--duration) ease-in-out infinite alternate;
-  opacity: 0;
+  inset: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  filter: brightness(0.45) saturate(0.8) contrast(1.1);
 }
 
-@keyframes twinkle {
-  0% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: var(--max-opacity, 0.8); transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.5); }
-}
-
-/* ========== 极光效果 ========== */
-.aurora {
-  position: fixed;
-  top: -20%;
-  left: -10%;
-  width: 120%;
-  height: 60%;
+.video-overlay {
+  position: absolute;
+  inset: 0;
   background: radial-gradient(
-    ellipse at 30% 50%,
-    rgba(212, 175, 55, 0.03) 0%,
-    rgba(160, 120, 60, 0.02) 30%,
-    transparent 60%
+    ellipse at 50% 40%,
+    rgba(7, 8, 10, 0.3) 0%,
+    rgba(7, 8, 10, 0.7) 60%,
+    rgba(7, 8, 10, 0.9) 100%
   );
   pointer-events: none;
-  z-index: 0;
 }
 
 /* ========== 金色辉光 ========== */

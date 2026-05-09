@@ -20,25 +20,6 @@ function t(key: string, lang: Lang, messages: Messages): string {
   return val || key;
 }
 
-const STARS = 120;
-const starPositions: { x: number; y: number; size: number; duration: number; delay: number; opacity: number }[] = [];
-for (let i = 0; i < STARS; i++) {
-  starPositions.push({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 2.5 + 0.5,
-    duration: Math.random() * 4 + 3,
-    delay: Math.random() * 5,
-    opacity: Math.random() * 0.6 + 0.2,
-  });
-}
-
-declare module 'react' {
-  interface CSSProperties {
-    '--duration'?: string;
-    '--max-opacity'?: number;
-  }
-}
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>('en');
@@ -94,24 +75,12 @@ export default function Home() {
 
   return (
     <>
-      {/* 星空背景 */}
-      <div className="starry-bg">
-        <div className="aurora" />
-        {starPositions.map((s, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              left: `${s.x}%`,
-              top: `${s.y}%`,
-              width: `${s.size}px`,
-              height: `${s.size}px`,
-              '--duration': `${s.duration}s`,
-              '--max-opacity': s.opacity,
-              animationDelay: `${s.delay}s`,
-            } as React.CSSProperties}
-          />
-        ))}
+      {/* 视频背景 */}
+      <div className="video-bg">
+        <video autoPlay muted loop playsInline className="bg-video">
+          <source src="/bg.mp4" type="video/mp4" />
+        </video>
+        <div className="video-overlay" />
       </div>
 
       <main className="min-h-screen relative z-10">
