@@ -27,14 +27,20 @@ jobs:
         with:
           node-version: 22
 
+      - name: Setup Pages
+        id: configure-pages
+        uses: actions/configure-pages@v4
+
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm cache clean --force
+          npm install --no-package-lock --no-audit --no-fund
 
       - name: Build static site
-        run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+        run: ./node_modules/.bin/next build
+        env:
+          PAGES_BASE_PATH: ${{ steps.configure-pages.outputs.base_path }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import BaziForm, { BaziFormData } from '@/components/BaziForm';
-import BaziChart from '@/components/BaziChart';
-import ReadingPanel from '@/components/ReadingPanel';
-import LanguageSwitch from '@/components/LanguageSwitch';
 import type { BaziResult, Gender, BaziInput } from '@/lib/bazi/types';
 import type { AiReading } from '@/lib/ai/interpretation';
 import { calculateBazi } from '@/lib/bazi';
-import { generateSeedReading, getLuckyInfo } from '@/lib/reading/seed-readings';
+import { generateSeedReading } from '@/lib/reading/seed-readings';
+import BaziChart from '@/components/BaziChart';
+import ReadingPanel from '@/components/ReadingPanel';
 import messagesEn from '../../messages/en.json';
 import messagesZh from '../../messages/zh.json';
 
@@ -18,215 +16,285 @@ type Lang = 'en' | 'zh';
 function t(key: string, lang: Lang, messages: Messages): string {
   const keys = key.split('.');
   let val: any = messages;
-  for (const k of keys) {
-    val = val?.[k];
-  }
+  for (const k of keys) { val = val?.[k]; }
   return val || key;
+}
+
+const STARS = 120;
+const starPositions: { x: number; y: number; size: number; duration: number; delay: number; opacity: number }[] = [];
+for (let i = 0; i < STARS; i++) {
+  starPositions.push({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2.5 + 0.5,
+    duration: Math.random() * 4 + 3,
+    delay: Math.random() * 5,
+    opacity: Math.random() * 0.6 + 0.2,
+  });
+}
+
+declare module 'react' {
+  interface CSSProperties {
+    '--duration'?: string;
+    '--max-opacity'?: number;
+  }
 }
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>('en');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [result, setResult] = useState<BaziResult | null>(null);
   const [reading, setReading] = useState<AiReading | null>(null);
-  const [fromCache, setFromCache] = useState(false);
+  const [error, setError] = useState('');
+  const [messages] = useState({ en: messagesEn, zh: messagesZh });
 
-  const messages = lang === 'en' ? messagesEn : messagesZh;
+  const [formData, setFormData] = useState({
+    year: '', month: '', day: '', hour: '', minute: '', gender: 'male' as 'male' | 'female',
+  });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = useCallback(async (data: BaziFormData) => {
+  const isValid =
+    formData.year && formData.month && formData.day &&
+    parseInt(formData.year) >= 1900 && parseInt(formData.year) <= 2100 &&
+    parseInt(formData.month) >= 1 && parseInt(formData.month) <= 12 &&
+    parseInt(formData.day) >= 1 && parseInt(formData.day) <= 31;
+
+  const handleSubmit = useCallback(async () => {
+    setSubmitted(true);
     setLoading(true);
     setError('');
     setResult(null);
     setReading(null);
 
     try {
-      // 直接在浏览器端计算八字（零后端依赖）
-      const input: BaziInput = {
-        year: parseInt(data.year),
-        month: parseInt(data.month),
-        day: parseInt(data.day),
-        hour: parseInt(data.hour),
-        minute: parseInt(data.minute),
-        gender: data.gender as Gender,
+      const bazi = calculateBazi({
+        year: parseInt(formData.year),
+        month: parseInt(formData.month),
+        day: parseInt(formData.day),
+        hour: parseInt(formData.hour),
+        minute: parseInt(formData.minute) || 0,
+        gender: formData.gender as Gender,
         timezoneOffset: 8,
-      };
+      });
 
-      const bazi = calculateBazi(input);
-
-      // 离线生成双语解读
+      const m = lang === 'en' ? messagesEn : messagesZh;
       const enReading = generateSeedReading(bazi, 'en');
       const zhReading = generateSeedReading(bazi, 'zh');
       const reading: AiReading = { en: enReading, zh: zhReading };
 
       setResult(bazi);
       setReading(reading);
-      setFromCache(false);
     } catch (err) {
-      console.error('Bazi calculation error:', err);
-      setError(t('home.error_server', lang, messages));
+      console.error(err);
+      setError('Something went wrong. Please check your input and try again.');
     } finally {
       setLoading(false);
     }
-  }, [lang]);
-
-  const handleNewReading = () => {
-    setResult(null);
-    setReading(null);
-    setError('');
-    setFromCache(false);
-  };
+  }, [formData, lang]);
 
   return (
-    <main className="min-h-screen bg-[#0d1117]">
-      {/* Navigation */}
-      <nav className="border-b border-[#30363d] bg-[#0d1117]/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">✦</span>
-            <span className="text-xl font-bold text-white">MysticSage</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <LanguageSwitch lang={lang} onChange={setLang} />
-          </div>
-        </div>
-      </nav>
+    <>
+      {/* 星空背景 */}
+      <div className="starry-bg">
+        <div className="aurora" />
+        {starPositions.map((s, i) => (
+          <div
+            key={i}
+            className="star"
+            style={{
+              left: `${s.x}%`,
+              top: `${s.y}%`,
+              width: `${s.size}px`,
+              height: `${s.size}px`,
+              '--duration': `${s.duration}s`,
+              '--max-opacity': s.opacity,
+              animationDelay: `${s.delay}s`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
 
-      {/* Hero Section */}
-      {!result && (
-        <section className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
+      <main className="min-h-screen relative z-10">
+        {/* ========== 顶栏 ========== */}
+        <nav className="border-b border-[rgba(212,175,55,0.1)] bg-[#07080a]/60 backdrop-blur-md sticky top-0 z-50">
+          <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-xl gold-text font-bold">✦ MysticSage</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setLang('en')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  lang === 'en'
+                    ? 'bg-[#d4af37]/20 text-[#f0d68a] border border-[#d4af37]/30'
+                    : 'text-[#9b8e7a] hover:text-[#e8dcc8]'
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLang('zh')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  lang === 'zh'
+                    ? 'bg-[#d4af37]/20 text-[#f0d68a] border border-[#d4af37]/30'
+                    : 'text-[#9b8e7a] hover:text-[#e8dcc8]'
+                }`}
+              >
+                中文
+              </button>
+            </div>
+          </div>
+        </nav>
 
-          <div className="max-w-5xl mx-auto px-4 pt-20 pb-16 relative">
+        {/* ========== 主内容 ========== */}
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          {/* 标题区 */}
+          {!submitted && (
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                {t('home.hero_title', lang, messages)}
+              <div className="text-6xl mb-6 select-none">☰</div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 gold-text leading-tight">
+                {lang === 'en' ? 'Unlock the Secrets of Your Bazi' : '揭开八字的神秘面纱'}
               </h1>
-              <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                {t('home.hero_subtitle', lang, messages)}
+              <p className="text-[#9b8e7a] max-w-2xl mx-auto leading-relaxed">
+                {lang === 'en'
+                  ? 'For 5,000 years, the ancient Chinese have used the Four Pillars of Destiny to illuminate the path ahead. Enter your birth time and discover the cosmic blueprint that shapes your life.'
+                  : '五千年来，古人以四柱八字测命理、明前路。输入你的出生时辰，探寻塑造你命运的宇宙蓝图。'}
               </p>
             </div>
+          )}
 
-            {/* Form Card */}
-            <div className="max-w-xl mx-auto bg-[#161b22] border border-[#30363d] rounded-2xl p-8 shadow-2xl">
-              <h2 className="text-xl font-semibold text-white mb-6 text-center">
-                {t('home.birth_info', lang, messages)}
-              </h2>
-              <BaziForm onSubmit={handleSubmit} loading={loading} lang={lang} />
-              {error && (
-                <p className="mt-4 text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                  {error}
-                </p>
+          {/* 提示：重填 */}
+          {submitted && (
+            <div className="text-center mb-8">
+              <button
+                onClick={() => { setSubmitted(false); setResult(null); setReading(null); }}
+                className="inline-flex items-center gap-2 text-[#9b8e7a] hover:text-[#f0d68a] transition-colors text-sm"
+              >
+                ← {lang === 'en' ? 'New Reading' : '重新测算'}
+              </button>
+            </div>
+          )}
+
+          {/* ========== 表单卡片 ========== */}
+          <div className="max-w-xl mx-auto bg-[#0f1117] mystical-border rounded-2xl p-8 ancestral-glow">
+            <h2 className="text-lg font-semibold text-center mb-6 gold-text">
+              {lang === 'en' ? '✦ Your Birth Information' : '✦ 你的出生信息'}
+            </h2>
+
+            <div className="space-y-6">
+              {/* 年月日时分 */}
+              <div className="grid grid-cols-5 gap-3">
+                {(['year', 'month', 'day', 'hour', 'minute'] as const).map((field) => {
+                  const labels: Record<string, string> = {
+                    year: lang === 'en' ? 'Year' : '年',
+                    month: lang === 'en' ? 'Month' : '月',
+                    day: lang === 'en' ? 'Day' : '日',
+                    hour: lang === 'en' ? 'Hour' : '时',
+                    minute: lang === 'en' ? 'Min' : '分',
+                  };
+                  const placeholders: Record<string, string> = {
+                    year: '1990', month: '1', day: '15', hour: '14', minute: '30',
+                  };
+                  return (
+                    <div key={field}>
+                      <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                      <input
+                        type="number"
+                        placeholder={placeholders[field]}
+                        value={formData[field]}
+                        onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                        className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-3 py-3 text-[#e8dcc8] placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40 focus:ring-1 focus:ring-[#d4af37]/20 transition-all text-sm"
+                        required
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 性别 */}
+              <div>
+                <label className="block text-xs text-[#9b8e7a] mb-1.5">
+                  {lang === 'en' ? 'Gender' : '性别'}
+                </label>
+                <div className="flex gap-3">
+                  {(['male', 'female'] as const).map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, gender: g })}
+                      className={`flex-1 py-3 rounded-lg border text-sm font-medium transition-all ${
+                        formData.gender === g
+                          ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#f0d68a]'
+                          : 'border-[#1a1d2a] text-[#6b5f4a] hover:border-[#3a3528]'
+                      }`}
+                    >
+                      {g === 'male' ? (lang === 'en' ? '♂ Male' : '♂ 男') : (lang === 'en' ? '♀ Female' : '♀ 女')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 提交按钮 */}
+              <button
+                onClick={handleSubmit}
+                disabled={!isValid || loading}
+                className={`gold-glow w-full py-4 rounded-xl font-semibold text-lg transition-all ${
+                  isValid && !loading
+                    ? 'bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] cursor-pointer'
+                    : 'bg-[#1a1d2a] text-[#3a3528] cursor-not-allowed'
+                }`}
+              >
+                {loading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="animate-spin">☰</span>
+                    {lang === 'en' ? 'Reading the stars...' : '观星测算中...'}
+                  </span>
+                ) : (
+                  <span>{lang === 'en' ? '✦ Reveal My Destiny' : '✦ 揭示我的命运'}</span>
+                )}
+              </button>
+
+              {loading && !result && (
+                <div className="text-center text-[#9b8e7a] text-sm">
+                  <div className="inline-flex items-center gap-2">
+                    <span className="animate-pulse">✦</span>
+                    {lang === 'en' ? 'Consulting the ancient texts...' : '查阅古籍中...'}
+                    <span className="animate-pulse">✦</span>
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* Features */}
-            <div className="mt-24 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {[
-                { icon: '🔮', title: t('home.feature_personality', lang, messages), desc: t('home.feature_personality_desc', lang, messages) },
-                { icon: '⚖️', title: t('home.feature_elements', lang, messages), desc: t('home.feature_elements_desc', lang, messages) },
-                { icon: '🧭', title: t('home.feature_destiny', lang, messages), desc: t('home.feature_destiny_desc', lang, messages) },
-              ].map((feat, i) => (
-                <div key={i} className="bg-[#161b22] border border-[#30363d] rounded-xl p-6 text-center">
-                  <div className="text-3xl mb-3">{feat.icon}</div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{feat.title}</h3>
-                  <p className="text-gray-400 text-sm">{feat.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Testimonials */}
-            <div className="mt-16 max-w-3xl mx-auto">
-              <h2 className="text-2xl font-bold text-white text-center mb-8">
-                {t('home.testimonials_title', lang, messages)}
-              </h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5">
-                  <p className="text-gray-300 italic leading-relaxed">
-                    &ldquo;{t('home.testimonial_1', lang, messages)}&rdquo;
-                  </p>
-                  <p className="text-gray-500 text-sm mt-3">— Sarah, NYC</p>
-                </div>
-                <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5">
-                  <p className="text-gray-300 italic leading-relaxed">
-                    &ldquo;{t('home.testimonial_2', lang, messages)}&rdquo;
-                  </p>
-                  <p className="text-gray-500 text-sm mt-3">— Mark, London</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Results Section */}
-      {result && (
-        <section className="max-w-4xl mx-auto px-4 py-12">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-white">
-                {t('reading.title', lang, messages)}
-              </h2>
-              <p className="text-gray-400 mt-1">{t('reading.subtitle', lang, messages)}</p>
-            </div>
-            <button
-              onClick={handleNewReading}
-              className="px-5 py-2.5 bg-[#161b22] border border-[#30363d] rounded-lg text-gray-300 hover:text-white hover:border-gray-500 transition-all"
-            >
-              ← {t('reading.new_reading', lang, messages)}
-            </button>
-          </div>
-
-          {/* Bazi Chart */}
-          <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-6 mb-8">
-            <BaziChart result={result} lang={lang} />
-          </div>
-
-          {/* AI Reading (if available) */}
-          {reading && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-6">
-              <ReadingPanel reading={reading} result={result} lang={lang} fromCache={fromCache} />
-            </div>
-          )}
-
-          {/* If no reading yet (loading AI) */}
-          {!reading && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-12 text-center">
-              <div className="text-4xl mb-4 animate-pulse">🔮</div>
-              <p className="text-gray-400 text-lg">
-                {t('reading.loading_reading', lang, messages)}
+            {error && (
+              <p className="mt-4 text-red-400/80 text-sm text-center bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                {error}
               </p>
-              <div className="flex justify-center gap-1 mt-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-                ))}
+            )}
+          </div>
+
+          {/* ========== 结果显示 ========== */}
+          {result && reading && (
+            <div className="mt-10 space-y-8 animate-in fade-in duration-500">
+              <BaziChart result={result} lang={lang} />
+              <ReadingPanel reading={reading} result={result} lang={lang} fromCache={false} />
+
+              {/* 细分 */}
+              <div className="text-center pt-4 border-t border-[#1a1d2a]">
+                <p className="text-[#6b5f4a] text-xs">
+                  {lang === 'en' ? 'For entertainment purposes only' : '仅供娱乐参考'}
+                </p>
               </div>
             </div>
           )}
-        </section>
-      )}
-
-      {/* Footer */}
-      <footer className="border-t border-[#30363d] mt-16">
-        <div className="max-w-5xl mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-gray-500">
-              <span>✦</span>
-              <span>MysticSage</span>
-            </div>
-            <p className="text-sm text-gray-500 text-center">
-              {t('footer.disclaimer', lang, messages)}
-            </p>
-            <div className="flex gap-4 text-sm text-gray-500">
-              <a href="#" className="hover:text-gray-300 transition-colors">{t('footer.privacy', lang, messages)}</a>
-              <a href="#" className="hover:text-gray-300 transition-colors">{t('footer.terms', lang, messages)}</a>
-            </div>
-          </div>
         </div>
-      </footer>
-    </main>
+
+        {/* 页脚 */}
+        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-16">
+          <div className="max-w-5xl mx-auto px-4 py-8 text-center">
+            <p className="text-sm text-[#3a3528]">✦ MysticSage — Ancient wisdom for the modern soul ✦</p>
+          </div>
+        </footer>
+      </main>
+    </>
   );
 }
