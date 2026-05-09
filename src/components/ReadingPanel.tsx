@@ -2,7 +2,7 @@
 
 import type { BaziResult } from '@/lib/bazi/types';
 import type { AiReading } from '@/lib/ai/interpretation';
-import { getLuckyInfo } from '@/lib/reading/seed-readings';
+import { getLuckyInfo, getHealthTip, getSummary } from '@/lib/reading/seed-readings';
 
 interface ReadingPanelProps {
   reading: AiReading;
@@ -15,11 +15,13 @@ export default function ReadingPanel({ reading, result, lang, fromCache }: Readi
   const isEn = lang === 'en';
   const content = isEn ? reading.en : reading.zh;
   const lucky = getLuckyInfo(result, lang);
+  const healthTip = getHealthTip(result, lang);
+  const summary = getSummary(result, lang);
 
   const sections = [
     { key: 'personality' as const, icon: '🔮', en: 'Your Personality', zh: '性格分析' },
     { key: 'career' as const, icon: '💼', en: 'Career & Path', zh: '事业与发展' },
-    { key: 'wealth' as const, icon: '💰', en: 'Wealth & Fortune', zh: '财运' },
+    { key: 'wealth' as const, icon: '💰', en: 'Wealth & Fortune', zh: '财运趋势' },
     { key: 'relationships' as const, icon: '💕', en: 'Relationships & Love', zh: '感情与人际' },
     { key: 'advice' as const, icon: '🌟', en: 'Life Advice', zh: '人生建议' },
   ];
@@ -44,11 +46,41 @@ export default function ReadingPanel({ reading, result, lang, fromCache }: Readi
                 <span className="text-xl">{icon}</span>
                 <h3 className="text-lg font-semibold gold-text">{isEn ? en : zh}</h3>
               </div>
-              <p className="text-[#e8dcc8] leading-relaxed whitespace-pre-line opacity-85">{text}</p>
+              <p className="text-[#e8dcc8] leading-relaxed whitespace-pre-line opacity-85 text-sm">{text}</p>
             </div>
           );
         })}
       </div>
+
+      {/* 健康提示 */}
+      {healthTip && (
+        <div className="bg-[#0f1117] border border-[rgba(212,175,55,0.08)] rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">🏥</span>
+            <h3 className="text-lg font-semibold gold-text">{isEn ? 'Health & Wellbeing' : '健康提示'}</h3>
+          </div>
+          <p className="text-[#e8dcc8] leading-relaxed whitespace-pre-line opacity-85 text-sm">{healthTip}</p>
+        </div>
+      )}
+
+      {/* 总结 */}
+      {summary.fortune && (
+        <div className="bg-gradient-to-r from-[rgba(212,175,55,0.08)] to-[rgba(168,135,46,0.05)] border border-[rgba(212,175,55,0.15)] rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">📜</span>
+            <h3 className="text-lg font-semibold gold-text">{isEn ? 'Your Destiny' : '命运寄语'}</h3>
+          </div>
+          <div className="space-y-3">
+            <p className="text-[#e8dcc8] leading-relaxed opacity-85 text-sm italic">&ldquo;{summary.fortune}&rdquo;</p>
+            {summary.advice && (
+              <div className="bg-[#07080a]/60 rounded-lg p-3 border border-[rgba(212,175,55,0.06)]">
+                <p className="text-xs text-[#9b8e7a] font-medium mb-2">{isEn ? '💡 Quick Tip' : '💡 开运建议'}</p>
+                <p className="text-[#f0d68a] text-sm">{summary.advice}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Lucky Info */}
       <div className="bg-gradient-to-r from-[#d4af37]/8 to-[#a8872e]/5 border border-[#d4af37]/20 rounded-xl p-5 ancestral-glow">

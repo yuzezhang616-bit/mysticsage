@@ -124,3 +124,33 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] { -moz-appearance: textfield; }
 
 html { scroll-behavior: smooth; }
+
+/* ========== 功能卡片 ========== */
+.feature-card {
+  transition: all .3s ease;
+}
+.feature-card:hover {
+  border-color: rgba(212,175,55,0.2);
+  box-shadow: 0 4px 24px rgba(212,175,55,0.06);
+  transform: translateY(-2px);
+}
+
+/* ========== FAQ ========== */
+details[open] summary {
+  border-bottom: 1px solid rgba(212,175,55,0.04);
+}
+
+/* ========== 统计数字动画 ========== */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== 首页滚动渐入 ========== */
+.animate-in {
+  animation: fadeUp .6s ease-out forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
