@@ -2,61 +2,11 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import Link from 'next/link';
 
-const ARTICLES = [
-  {
-    slug: 'what-is-bazi',
-    icon: '📜',
-    en: { title: 'What is Bazi (Eight Characters)?', excerpt: 'Discover the ancient Chinese art of Bazi reading — how your birth date and time reveal your destiny through the Four Pillars of Destiny.' },
-    zh: { title: '什么是八字？八字算命的基本原理', excerpt: '探索古老的中国八字命理学——你的出生年月日时如何通过四柱八字揭示你的命运密码。' },
-  },
-  {
-    slug: 'five-elements',
-    icon: '☯',
-    en: { title: 'The Five Elements in Chinese Astrology', excerpt: 'Understanding Wood, Fire, Earth, Metal, and Water — how these five elements shape your personality, health, relationships, and destiny.' },
-    zh: { title: '五行学说详解：木火土金水如何影响你的命运', excerpt: '理解木、火、土、金、水——这五种元素如何塑造你的性格、健康、人际关系和命运走向。' },
-  },
-  {
-    slug: 'day-master',
-    icon: '🔮',
-    en: { title: 'Your Day Master: The Key to Your Bazi Chart', excerpt: 'Learn about the 10 Heavenly Stems and how your Day Master element defines your core personality and life path.' },
-    zh: { title: '日主是什么？你的日元五行决定了你的性格本质', excerpt: '了解十天干，你的日主五行如何定义你的核心性格和人生轨迹。' },
-  },
-  {
-    slug: 'bazi-compatibility',
-    icon: '💕',
-    en: { title: 'Bazi Compatibility & Love Match', excerpt: 'How to use Bazi to find your perfect match — the ancient Chinese method of relationship compatibility analysis.' },
-    zh: { title: '八字合婚配对：如何看两人八字是否相合', excerpt: '如何用八字找到你的最佳伴侣——古老的中国婚配分析方法。' },
-  },
-  {
-    slug: 'feng-shui-basics',
-    icon: '🏯',
-    en: { title: 'Feng Shui Basics for Beginners', excerpt: 'Simple Feng Shui tips to harmonize your home, improve your luck, and invite positive energy into your life.' },
-    zh: { title: '风水入门：简单实用的家居风水布局指南', excerpt: '简单的风水技巧来调和你的家居环境，改善运势，邀请正能量进入你的生活。' },
-  },
-  {
-    slug: 'face-reading-guide',
-    icon: '👤',
-    en: { title: 'Chinese Face Reading: A Complete Guide', excerpt: 'Learn the ancient art of Mian Xiang — how your facial features reveal your character, fortune, and life path.' },
-    zh: { title: '面相学入门指南：从额头到下巴，每个部位都藏着你的命运密码', excerpt: '学习古老的相学——你的面部特征如何揭示你的性格、运势和人生轨迹。' },
-  },
-  {
-    slug: 'dream-meanings',
-    icon: '🌙',
-    en: { title: 'Chinese Dream Interpretation: What Your Dreams Mean', excerpt: 'Explore the hidden meanings behind common dreams through the lens of Chinese wisdom and the Five Elements.' },
-    zh: { title: '解梦大全：常见梦境的含义与五行解读', excerpt: '以中华智慧和五行学说，探索常见梦境背后的深层含义。' },
-  },
-  {
-    slug: 'iching-guide',
-    icon: '☯',
-    en: { title: 'I Ching: The Book of Changes Explained', excerpt: 'A beginner\'s guide to the I Ching oracle — how to consult this ancient text for wisdom and guidance.' },
-    zh: { title: '易经入门：周易占卜的基本方法与卦象解读', excerpt: '周易占卜初学者指南——如何向这部古老的经典寻求智慧与指引。' },
-  },
-];
+const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: string}> = [{"slug": "what-is-bazi", "icon": "📜", "title_en": "What is Bazi?", "title_zh": "什么是八字？"}, {"slug": "five-elements", "icon": "☯", "title_en": "The Five Elements", "title_zh": "五行学说"}, {"slug": "day-master", "icon": "🔮", "title_en": "Your Day Master", "title_zh": "日主解析"}, {"slug": "bazi-compatibility", "icon": "💕", "title_en": "Bazi Love Compatibility", "title_zh": "八字合婚"}, {"slug": "feng-shui-basics", "icon": "🏯", "title_en": "Feng Shui Basics", "title_zh": "风水入门"}, {"slug": "face-reading-guide", "icon": "👤", "title_en": "Chinese Face Reading", "title_zh": "面相学"}, {"slug": "dream-meanings", "icon": "🌙", "title_en": "Dream Interpretation", "title_zh": "解梦大全"}, {"slug": "iching-guide", "icon": "☯", "title_en": "I Ching Guide", "title_zh": "易经入门"}, {"slug": "jia-wood-day-master", "icon": "🌲", "title_en": "Jia Wood Day Master", "title_zh": "甲木日主"}, {"slug": "yi-wood-day-master", "icon": "🌿", "title_en": "Yi Wood Day Master", "title_zh": "乙木日主"}, {"slug": "bing-fire-day-master", "icon": "☀️", "title_en": "Bing Fire Day Master", "title_zh": "丙火日主"}, {"slug": "ding-fire-day-master", "icon": "🕯️", "title_en": "Ding Fire Day Master", "title_zh": "丁火日主"}, {"slug": "wu-earth-day-master", "icon": "⛰️", "title_en": "Wu Earth Day Master", "title_zh": "戊土日主"}, {"slug": "ji-earth-day-master", "icon": "🌷", "title_en": "Ji Earth Day Master", "title_zh": "己土日主"}, {"slug": "geng-metal-day-master", "icon": "⚔️", "title_en": "Geng Metal Day Master", "title_zh": "庚金日主"}, {"slug": "xin-metal-day-master", "icon": "💎", "title_en": "Xin Metal Day Master", "title_zh": "辛金日主"}, {"slug": "ren-water-day-master", "icon": "🌊", "title_en": "Ren Water Day Master", "title_zh": "壬水日主"}, {"slug": "gui-water-day-master", "icon": "🌧️", "title_en": "Gui Water Day Master", "title_zh": "癸水日主"}];
 
 export default function KnowledgePage() {
-  const [lang, setLang] = useState<'en'|'zh'>('zh');
+  const [lang, setLang] = useState<'en'|'zh'>('en');
   const isEn = lang === 'en';
 
   return (
@@ -68,32 +18,29 @@ export default function KnowledgePage() {
       <main className="min-h-screen relative z-10">
         <NavBar currentLang={lang} onLangChange={setLang} />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '📚 Knowledge Base' : '📚 命理知识库'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '\uD83D\uDCDA Knowledge Base' : '\uD83D\uDCDA 命理知识库'}</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
             {isEn ? 'Learn about Bazi, Five Elements, Feng Shui, and more ancient Chinese wisdom' : '学习八字、五行、风水等中华传统智慧知识'}
           </p>
 
           <div className="grid gap-4">
             {ARTICLES.map((article, i) => (
-              <div key={i} className="bg-[#0f1117]/70 border border-[rgba(212,175,55,0.06)] hover:border-[rgba(212,175,55,0.2)] rounded-xl p-5 transition-all cursor-pointer group"
-                onClick={() => window.location.href = `https://mystic8zi.top`}>
+              <a key={i} href={`/knowledge/${article.slug}`}
+                className="bg-[#0f1117]/70 border border-[rgba(212,175,55,0.06)] hover:border-[rgba(212,175,55,0.2)] rounded-xl p-5 transition-all cursor-pointer group block no-underline">
                 <div className="flex items-start gap-4">
                   <span className="text-2xl">{article.icon}</span>
                   <div className="flex-1 min-w-0">
                     <h2 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">
-                      {isEn ? article.en.title : article.zh.title}
+                      {isEn ? article.title_en : article.title_zh}
                     </h2>
-                    <p className="text-xs text-[#9b8e7a] leading-relaxed">
-                      {isEn ? article.en.excerpt : article.zh.excerpt}
-                    </p>
                     <div className="mt-2">
                       <span className="text-[10px] text-[#d4af37]/60 group-hover:text-[#d4af37] transition-colors">
-                        {isEn ? 'Read more →' : '马上去体验 →'}
+                        {isEn ? 'Read more \u2192' : '阅读全文 \u2192'}
                       </span>
                     </div>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
 
@@ -112,7 +59,7 @@ export default function KnowledgePage() {
 
         <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
           <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+            <p className="text-xs text-[#3a3528]">{'\u2726'} MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
           </div>
         </footer>
       </main>
