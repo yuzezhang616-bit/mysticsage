@@ -3,7 +3,176 @@
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
 
-const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: string}> = [{"slug": "what-is-bazi", "icon": "📜", "title_en": "What is Bazi?", "title_zh": "什么是八字？"}, {"slug": "five-elements", "icon": "☯", "title_en": "The Five Elements", "title_zh": "五行学说"}, {"slug": "day-master", "icon": "🔮", "title_en": "Your Day Master", "title_zh": "日主解析"}, {"slug": "bazi-compatibility", "icon": "💕", "title_en": "Bazi Love Compatibility", "title_zh": "八字合婚"}, {"slug": "feng-shui-basics", "icon": "🏯", "title_en": "Feng Shui Basics", "title_zh": "风水入门"}, {"slug": "face-reading-guide", "icon": "👤", "title_en": "Chinese Face Reading", "title_zh": "面相学"}, {"slug": "dream-meanings", "icon": "🌙", "title_en": "Dream Interpretation", "title_zh": "解梦大全"}, {"slug": "iching-guide", "icon": "☯", "title_en": "I Ching Guide", "title_zh": "易经入门"}, {"slug": "jia-wood-day-master", "icon": "🌲", "title_en": "Jia Wood Day Master", "title_zh": "甲木日主"}, {"slug": "yi-wood-day-master", "icon": "🌿", "title_en": "Yi Wood Day Master", "title_zh": "乙木日主"}, {"slug": "bing-fire-day-master", "icon": "☀️", "title_en": "Bing Fire Day Master", "title_zh": "丙火日主"}, {"slug": "ding-fire-day-master", "icon": "🕯️", "title_en": "Ding Fire Day Master", "title_zh": "丁火日主"}, {"slug": "wu-earth-day-master", "icon": "⛰️", "title_en": "Wu Earth Day Master", "title_zh": "戊土日主"}, {"slug": "ji-earth-day-master", "icon": "🌷", "title_en": "Ji Earth Day Master", "title_zh": "己土日主"}, {"slug": "geng-metal-day-master", "icon": "⚔️", "title_en": "Geng Metal Day Master", "title_zh": "庚金日主"}, {"slug": "xin-metal-day-master", "icon": "💎", "title_en": "Xin Metal Day Master", "title_zh": "辛金日主"}, {"slug": "ren-water-day-master", "icon": "🌊", "title_en": "Ren Water Day Master", "title_zh": "壬水日主"}, {"slug": "gui-water-day-master", "icon": "🌧️", "title_en": "Gui Water Day Master", "title_zh": "癸水日主"}];
+const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: string}> = [
+  {
+    "slug": "what-is-bazi",
+    "icon": "📜",
+    "title_en": "What is Bazi?",
+    "title_zh": "什么是八字？"
+  },
+  {
+    "slug": "five-elements",
+    "icon": "☯",
+    "title_en": "The Five Elements",
+    "title_zh": "五行学说"
+  },
+  {
+    "slug": "day-master",
+    "icon": "🔮",
+    "title_en": "Your Day Master",
+    "title_zh": "日主解析"
+  },
+  {
+    "slug": "bazi-compatibility",
+    "icon": "💕",
+    "title_en": "Bazi Love Compatibility",
+    "title_zh": "八字合婚"
+  },
+  {
+    "slug": "feng-shui-basics",
+    "icon": "🏯",
+    "title_en": "Feng Shui Basics",
+    "title_zh": "风水入门"
+  },
+  {
+    "slug": "face-reading-guide",
+    "icon": "👤",
+    "title_en": "Chinese Face Reading",
+    "title_zh": "面相学"
+  },
+  {
+    "slug": "dream-meanings",
+    "icon": "🌙",
+    "title_en": "Dream Interpretation",
+    "title_zh": "解梦大全"
+  },
+  {
+    "slug": "iching-guide",
+    "icon": "☯",
+    "title_en": "I Ching Guide",
+    "title_zh": "易经入门"
+  },
+  {
+    "slug": "jia-wood-day-master",
+    "icon": "🌲",
+    "title_en": "Jia Wood Day Master",
+    "title_zh": "甲木日主"
+  },
+  {
+    "slug": "yi-wood-day-master",
+    "icon": "🌿",
+    "title_en": "Yi Wood Day Master",
+    "title_zh": "乙木日主"
+  },
+  {
+    "slug": "bing-fire-day-master",
+    "icon": "☀️",
+    "title_en": "Bing Fire Day Master",
+    "title_zh": "丙火日主"
+  },
+  {
+    "slug": "ding-fire-day-master",
+    "icon": "🕯️",
+    "title_en": "Ding Fire Day Master",
+    "title_zh": "丁火日主"
+  },
+  {
+    "slug": "wu-earth-day-master",
+    "icon": "⛰️",
+    "title_en": "Wu Earth Day Master",
+    "title_zh": "戊土日主"
+  },
+  {
+    "slug": "ji-earth-day-master",
+    "icon": "🌷",
+    "title_en": "Ji Earth Day Master",
+    "title_zh": "己土日主"
+  },
+  {
+    "slug": "geng-metal-day-master",
+    "icon": "⚔️",
+    "title_en": "Geng Metal Day Master",
+    "title_zh": "庚金日主"
+  },
+  {
+    "slug": "xin-metal-day-master",
+    "icon": "💎",
+    "title_en": "Xin Metal Day Master",
+    "title_zh": "辛金日主"
+  },
+  {
+    "slug": "ren-water-day-master",
+    "icon": "🌊",
+    "title_en": "Ren Water Day Master",
+    "title_zh": "壬水日主"
+  },
+  {
+    "slug": "gui-water-day-master",
+    "icon": "🌧️",
+    "title_en": "Gui Water Day Master",
+    "title_zh": "癸水日主"
+  },
+  {
+    "slug": "five-elements-generating",
+    "icon": "🔥➡️🌍",
+    "title_en": "Five Elements Generating Cycle",
+    "title_zh": "五行相生详解"
+  },
+  {
+    "slug": "five-elements-controlling",
+    "icon": "⚔️☯",
+    "title_en": "Five Elements Controlling Cycle",
+    "title_zh": "五行相克详解"
+  },
+  {
+    "slug": "lucky-elements",
+    "icon": "🌟",
+    "title_en": "Your Lucky Element (Yong Shen)",
+    "title_zh": "喜用神解析"
+  },
+  {
+    "slug": "shi-shen-ten-gods",
+    "icon": "👥",
+    "title_en": "The 10 Gods (Shi Shen)",
+    "title_zh": "十神解析"
+  },
+  {
+    "slug": "luck-cycles-da-yun",
+    "icon": "⏳",
+    "title_en": "Luck Cycles (Da Yun)",
+    "title_zh": "大运详解"
+  },
+  {
+    "slug": "chinese-zodiac-complete",
+    "icon": "🐉",
+    "title_en": "Chinese Zodiac Guide",
+    "title_zh": "十二生肖大全"
+  },
+  {
+    "slug": "tai-sui-2026",
+    "icon": "⚡",
+    "title_en": "Tai Sui 2026",
+    "title_zh": "2026年太岁"
+  },
+  {
+    "slug": "bazi-career-guidance",
+    "icon": "💼",
+    "title_en": "Bazi Career Guidance",
+    "title_zh": "八字看事业"
+  },
+  {
+    "slug": "bazi-health",
+    "icon": "💊",
+    "title_en": "Bazi Health Insights",
+    "title_zh": "八字看健康"
+  },
+  {
+    "slug": "how-to-read-bazi",
+    "icon": "📖",
+    "title_en": "How to Read a Bazi Chart",
+    "title_zh": "八字排盘教程"
+  }
+];
 
 export default function KnowledgePage() {
   const [lang, setLang] = useState<'en'|'zh'>('en');
