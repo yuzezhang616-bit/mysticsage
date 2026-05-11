@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "free Chinese astrology online",
   ],
   verification: {
-    google: "G-04B8Z44JPM",
+    google: "<meta name="google-site-verification" content="C1nGHsDw8FE3xoZ-lOXGZFpxodNcrMe834fPZAQnITs" />",
   },
   openGraph: {
     title: "Free Bazi Reading — Discover Your Chinese Astrology Chart Online",
