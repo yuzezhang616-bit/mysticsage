@@ -80,7 +80,7 @@ export default function FengShuiPage() {
                 { icon:'⚔️', en:'Metal - Clarity, Completion, West', zh:'金 — 清晰、完成、西方' },
                 { icon:'💧', en:'Water - Wisdom, Career, North', zh:'水 — 智慧、事业、北方' },
               ].map((el, i) => (
-                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-3 text-center">
+                <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-3 text-center">
                   <div className="text-2xl mb-2">{el.icon}</div>
                   <p className="text-[#9b8e7a] text-[10px] leading-relaxed">el.en</p>
                 </div>

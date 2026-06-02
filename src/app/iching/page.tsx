@@ -68,7 +68,7 @@ export default function IChingPage() {
             Cast the coins and receive ancient wisdom from the Book of Changes
           </p>
 
-          <div className="max-w-md mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
+          <div className="max-w-md mx-auto bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
             <div className="space-y-4">
               <div>
                 <label className="text-xs text-[#9b8e7a] mb-1 block">Your Question (optional)</label>
@@ -84,7 +84,7 @@ export default function IChingPage() {
 
           {hexagram && (
             <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
                 <div className="text-5xl mb-3">{hexagram.img}</div>
                 <h2 className="text-xl font-bold gold-text mb-1">#{hexagram.num} hexagram.name_en</h2>
                 <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85 mt-4">hexagram.desc_en</p>
@@ -105,7 +105,7 @@ export default function IChingPage() {
                 { en:{t:'How to Consult',d:'Traditionally, three coins are tossed six times. Each toss generates a yin or yang line. The resulting hexagram is then interpreted as guidance for your question.'}, zh:{t:'如何占卜',d:'传统方法是用三枚铜钱投掷六次。每一次投掷产生一条阴爻或阳爻，由此得到的卦象即为问题的指引。'} },
                 { en:{t:'Philosophical Wisdom',d:'Beyond divination, the I Ching offers profound insights about change, balance, and the nature of reality. Its wisdom is as relevant today as it was three millennia ago.'}, zh:{t:'哲学智慧',d:'超越占卜层面，易经提供了关于变化、平衡和现实本质的深刻洞见。它的智慧在今天与三千年前一样具有启发性。'} },
               ].map((item,i) => (
-                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4">
+                <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-4">
                   <h4 className="text-xs font-semibold gold-text mb-2">item.en.t</h4>
                   <p className="text-[#9b8e7a] text-xs leading-relaxed">item.en.d</p>
                 </div>

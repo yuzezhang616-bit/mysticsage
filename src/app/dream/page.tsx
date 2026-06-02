@@ -117,7 +117,7 @@ export default function DreamPage() {
             <h2 className="text-lg font-semibold gold-text text-center mb-6">Elements in Dreams</h2>
             <div className="grid md:grid-cols-5 gap-3">
               {Object.entries(FIVE_ELEMENTS_IN_DREAMS).map(([el, data], i) => (
-                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-3 text-center">
+                <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-3 text-center">
                   <div className="text-lg mb-1">
                     {el === 'wood' ? '🌳' : el === 'fire' ? '🔥' : el === 'earth' ? '⛰️' : el === 'metal' ? '⚔️' : '💧'}
                   </div>

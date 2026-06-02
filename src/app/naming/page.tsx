@@ -138,7 +138,7 @@ export default function NamingPage() {
             Find a name that harmonizes with your destiny
           </p>
 
-          <div className="max-w-md mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
+          <div className="max-w-md mx-auto bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
             <div className="space-y-4">
               <div>
                 <label className="text-xs text-[#9b8e7a] mb-1 block">Surname (optional)</label>
@@ -194,7 +194,7 @@ export default function NamingPage() {
                 { en:{t:'Sound and Harmony',d:'The pronunciation of a name matters — it should flow beautifully and harmonize with the surname for a pleasing rhythm.'}, zh:{t:'音韵和谐',d:'名字的读音非常重要——应与姓氏搭配流畅悦耳，形成优美的韵律。'} },
                 { en:{t:'Generational Tradition',d:'Some families follow generational naming patterns, where siblings share a common character in their names.'}, zh:{t:'辈分传统',d:'一些家族遵循辈分起名的传统，兄弟姐妹的名字中共享同一个字。'} },
               ].map((item,i) => (
-                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4">
+                <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-4">
                   <h4 className="text-xs font-semibold gold-text mb-2">item.en.t</h4>
                   <p className="text-[#9b8e7a] text-xs leading-relaxed">item.en.d</p>
                 </div>

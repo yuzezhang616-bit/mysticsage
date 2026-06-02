@@ -122,7 +122,7 @@ export default function Home() {
               </div>
 
               {/* Form card */}
-              <div className="max-w-xl mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 shadow-2xl shadow-black/50">
+              <div className="max-w-xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/[0.12] rounded-2xl p-8 shadow-2xl shadow-black/50">
                 <h2 className="text-lg font-semibold text-center mb-6 gold-text">✦ Your Birth Information</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-5 gap-3">
@@ -152,7 +152,7 @@ export default function Home() {
                   </div>
                   <button onClick={handleSubmit} disabled={!isValid || loading}
                     className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${isValid && !loading
-                      ? 'bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] cursor-pointer hover:shadow-[0_0_24px_rgba(212,175,55,0.2)] hover:brightness-110'
+                      ? 'bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] cursor-pointer hover:shadow-[0_0_32px_rgba(212,175,55,0.25)] hover:brightness-110 hover:-translate-y-0.5'
                       : 'bg-white/5 text-[#3a3528] cursor-not-allowed border border-white/5'}`}>
                     {loading
                       ? <span className="inline-flex items-center gap-2"><span className="gold-spinner"></span>Reading the stars...</span>
@@ -164,7 +164,7 @@ export default function Home() {
 
               {/* Today's Horoscope */}
               <div className="mt-24 text-center">
-                <div className="max-w-xl mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 shadow-lg shadow-black/30">
+                <div className="max-w-xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/[0.12] rounded-2xl p-8 shadow-lg shadow-black/30">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#6b5f4a] mb-4">✦ Today's Chinese Horoscope</p>
                   <div className="flex items-center justify-center gap-3 mb-4">
                     <span className="text-4xl">{ZODIAC_EMOJIS[TODAY_ZODIAC]}</span>
@@ -194,7 +194,7 @@ export default function Home() {
                     { icon:'🔥', t:'Elemental Balance', d:'See how Wood, Fire, Earth, Metal, and Water flow within you. Find which elements bring harmony and which need nurturing.' },
                     { icon:'⭐', t:'Life Guidance', d:'Receive personalized insights about career paths, relationships, wealth potential, and personal growth tailored to your chart.' },
                   ].map((item, i) => (
-                    <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-2xl p-7 text-center transition-all hover:border-[#d4af37]/20 hover:-translate-y-0.5">
+                    <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-2xl p-7 text-center transition-all hover:border-[#d4af37]/20 hover:-translate-y-0.5">
                       <div className="text-4xl mb-4">{item.icon}</div>
                       <h3 className="text-base font-semibold gold-text mb-2">{item.t}</h3>
                       <p className="text-[#9b8e7a] text-xs leading-relaxed">{item.d}</p>
@@ -207,7 +207,7 @@ export default function Home() {
               <div className="mt-32 text-center scroll-reveal">
                 <h2 className="text-2xl md:text-3xl font-bold gold-text mb-3">Learn Bazi with Video Guide</h2>
                 <p className="text-[#9b8e7a] text-sm max-w-xl mx-auto mb-10">A beginner-friendly introduction to Chinese astrology</p>
-                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden bg-black/20 backdrop-blur-xl border border-white/[0.07] shadow-lg shadow-black/30">
+                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/[0.12] shadow-lg shadow-black/30">
                   <div className="relative" style={{ paddingBottom: '56.25%' }}>
                     <iframe src="https://www.youtube.com/embed/z_Daeo1QiII" title="Bazi Chinese Astrology Guide"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
@@ -218,7 +218,7 @@ export default function Home() {
 
               {/* Stats / Social Proof */}
               <div className="mt-24 text-center scroll-reveal">
-                <div className="max-w-4xl mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-8 shadow-lg shadow-black/30">
+                <div className="max-w-4xl mx-auto bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/[0.12] rounded-2xl p-8 shadow-lg shadow-black/30">
                   <h2 className="text-xl font-bold gold-text mb-2">Trusted by Seekers Worldwide</h2>
                   <p className="text-[#9b8e7a] text-xs mb-8">Join thousands exploring ancient wisdom</p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -247,7 +247,7 @@ export default function Home() {
                     { href:'/knowledge/five-elements', icon:'🌊', t:'Five Elements', d:'Wood, Fire, Earth, Metal, Water — the building blocks of destiny' },
                     { href:'/knowledge/chinese-zodiac-complete', icon:'🐉', t:'Zodiac Guide', d:'Complete guide to the 12 Chinese zodiac signs' },
                   ].map((item, i) => (
-                    <a key={i} href={item.href} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-5 text-left transition-all hover:border-[#d4af37]/20 group">
+                    <a key={i} href={item.href} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-5 text-left transition-all hover:border-[#d4af37]/20 group">
                       <span className="text-2xl block mb-3">{item.icon}</span>
                       <h3 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">{item.t}</h3>
                       <p className="text-[10px] text-[#6b5f4a]">{item.d}</p>
@@ -287,7 +287,7 @@ export default function Home() {
                     { q:'Do I need an exact birth time?', a:'An exact birth time provides the most accurate reading, especially for the Hour Pillar which influences career and relationships. If unknown, we default to noon.' },
                     { q:'How is my data handled?', a:'Your privacy is paramount. All calculations happen entirely in your browser — no data is sent to any server. We never store or share your birth information.' },
                   ].map((faq, i) => (
-                    <details key={i} className="group bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl overflow-hidden">
+                    <details key={i} className="group bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl overflow-hidden">
                       <summary className="px-5 py-4 cursor-pointer text-sm font-medium text-[#e8dcc8] flex items-center gap-2 hover:bg-white/[0.02] transition-colors list-none [&::-webkit-details-marker]:hidden">
                         <span className="text-[#d4af37] text-xs mr-1">✦</span>
                         {faq.q}

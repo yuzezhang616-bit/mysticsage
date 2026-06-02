@@ -90,7 +90,7 @@ export default function KnowledgeArticlePage() {
               )}
               {/* Inline CTA after every 3rd section */}
               {i > 0 && i % 3 === 0 && (
-                <div className="my-6 bg-black/20 backdrop-blur-lg border border-[#d4af37]/20 rounded-xl p-4 text-center">
+                <div className="my-6 bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-[#d4af37]/20 rounded-xl p-4 text-center">
                   <p className="text-xs text-[#9b8e7a] mb-2">✨ Curious about your own Bazi chart?</p>
                   <a href="/" className="inline-block text-xs text-[#d4af37] hover:text-[#f0d68a] transition-colors font-medium">
                     Get Your Free Reading →
@@ -102,12 +102,12 @@ export default function KnowledgeArticlePage() {
 
           {/* Bottom CTA + Share + Related */}
           <div className="mt-12 pt-6 border-t border-white/[0.06] space-y-4">
-            <div className="bg-black/20 backdrop-blur-lg border border-white/[0.07] rounded-xl p-5">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-5">
               <p className="text-xs text-[#9b8e7a] leading-relaxed">✨ Experience your own Bazi reading — free, no signup required, all in your browser.</p>
               <a href="/" className="inline-block mt-2 text-xs text-[#d4af37] hover:text-[#f0d68a] transition-colors">Get Your Free Bazi Reading →</a>
             </div>
 
-            <div className="bg-black/20 backdrop-blur-lg border border-white/[0.07] rounded-xl p-5">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-5">
               <p className="text-[10px] text-[#6b5f4a] mb-3 uppercase tracking-wider">📤 Share this article</p>
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`, '_blank','width=600,height=400')}
@@ -121,7 +121,7 @@ export default function KnowledgeArticlePage() {
               </div>
             </div>
 
-            <div className="bg-black/20 backdrop-blur-lg border border-white/[0.07] rounded-xl p-5">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-5">
               <p className="text-[10px] text-[#6b5f4a] mb-3 uppercase tracking-wider">📖 Related articles</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {RELATED_SLUGS.filter(s => s !== slug).slice(0, 3).map(s => {

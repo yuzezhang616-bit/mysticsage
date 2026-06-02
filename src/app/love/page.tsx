@@ -84,7 +84,7 @@ export default function LoveMatchPage() {
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Person 1 */}
-            <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-5">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
               <h3 className="text-sm font-semibold gold-text mb-4 text-center">👤 First Person</h3>
               <div className="grid grid-cols-4 gap-2 mb-3">
                 <div><label className="text-xs text-[#9b8e7a]">Year</label><input type="number" placeholder="1990" value={p1.year} onChange={e=>setP1({...p1,year:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
@@ -103,7 +103,7 @@ export default function LoveMatchPage() {
             </div>
 
             {/* Person 2 */}
-            <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-5">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
               <h3 className="text-sm font-semibold gold-text mb-4 text-center">👤 Second Person</h3>
               <div className="grid grid-cols-4 gap-2 mb-3">
                 <div><label className="text-xs text-[#9b8e7a]">Year</label><input type="number" placeholder="1992" value={p2.year} onChange={e=>setP2({...p2,year:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
@@ -131,7 +131,7 @@ export default function LoveMatchPage() {
           {result && (
             <div className="space-y-4 animate-in fade-in duration-500">
               {/* Score */}
-              <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
                 <p className="text-xs text-[#9b8e7a] mb-2">Compatibility Score</p>
                 <div className="text-5xl font-bold gold-text mb-2">{result.score}<span className="text-xl">%</span></div>
                 <div className="w-full bg-[#1a1d2a] rounded-full h-2 overflow-hidden max-w-xs mx-auto">
@@ -141,7 +141,7 @@ export default function LoveMatchPage() {
                 </div>
               </div>
               {/* Analysis */}
-              <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-5">
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
                 <h3 className="text-sm font-semibold gold-text mb-3">📊 Analysis</h3>
                 <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85">{result.analysis}</p>
               </div>
@@ -163,7 +163,7 @@ export default function LoveMatchPage() {
                 { en:{t:'Heavenly Stems',d:'Each birth year is assigned a Heavenly Stem that reveals one\'s elemental nature. Compatibility is calculated by how these elements interact.'}, zh:{t:'天干五行',d:'每个出生年份对应一个天干，揭示其五行属性。契合度由这些五行如何相互作用来计算。'} },
                 { en:{t:'Beyond Compatibility',d:'While elemental compatibility is important, true harmony depends on mutual respect, communication, and shared values. Use this as a guide, not a verdict.'}, zh:{t:'超越契合度',d:'五行契合度固然重要，但真正的和谐取决于相互尊重、沟通和共同的价值观。将此作为参考，而非定论。'} },
               ].map((item,i) => (
-                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4">
+                <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-4">
                   <h4 className="text-xs font-semibold gold-text mb-2">{item.en.t}</h4>
                   <p className="text-[#9b8e7a] text-xs leading-relaxed">{item.en.d}</p>
                 </div>

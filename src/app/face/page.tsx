@@ -318,7 +318,7 @@ export default function FaceReadingPage() {
                   { en:{t:'Middle Section (Humanity)',a:'Ages 31-50',d:'The nose, eyes, and cheek area represent career, wealth, and social status.'}, zh:{t:'中停（人）',a:'31-50岁',d:'鼻子、眼睛和颧部代表事业、财富和社会地位。'} },
                   { en:{t:'Lower Section (Earth)',a:'Ages 51+',d:'The mouth, chin, and jaw represent later years, legacy, and final fulfillment.'}, zh:{t:'下停（地）',a:'51岁以上',d:'口、下巴和下颌代表晚年、遗产和最终的圆满。'} },
                 ].map((s,i) => (
-                  <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4 text-center">
+                  <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-4 text-center">
                     <h4 className="text-xs font-semibold gold-text mb-1">s.en.t</h4>
                     <p className="text-[#d4af37] text-xs mb-2">s.en.a</p>
                     <p className="text-[#9b8e7a] text-xs">s.en.d</p>
