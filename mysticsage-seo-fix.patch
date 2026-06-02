@@ -1,0 +1,308 @@
+From 1d159e55fea070742be2ed923b5f61286d81c965 Mon Sep 17 00:00:00 2001
+From: MysticSage Bot <mysticsage-bot@users.noreply.github.com>
+Date: Tue, 2 Jun 2026 14:53:35 +0800
+Subject: [PATCH] =?UTF-8?q?fix:=20=E6=AF=8F=E4=B8=AA=E9=A1=B5=E9=9D=A2?=
+ =?UTF-8?q?=E7=8B=AC=E7=AB=8BSEO=E6=A0=87=E9=A2=98/=E6=8F=8F=E8=BF=B0?=
+ =?UTF-8?q?=EF=BC=88=E4=B9=8B=E5=89=8D=E6=89=80=E6=9C=89=E9=A1=B5=E9=9D=A2?=
+ =?UTF-8?q?=E5=85=B1=E7=94=A8=E5=90=8C=E4=B8=80=E4=B8=AAtitle=EF=BC=89?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- 知识文章（30+篇）：generateMetadata 动态生成文章标题
+- 7个工具页（love/face/dream/iching/fengshui/naming/knowledge）：各自layout.tsx独立metadata
+- layout.tsx：改为首页专用标题，子页面各自覆盖
+- 添加 canonical URL / OpenGraph / Twitter card 支持
+---
+ src/app/dream/layout.tsx          | 20 +++++++++++++++++++
+ src/app/face/layout.tsx           | 20 +++++++++++++++++++
+ src/app/fengshui/layout.tsx       | 20 +++++++++++++++++++
+ src/app/iching/layout.tsx         | 20 +++++++++++++++++++
+ src/app/knowledge/[slug]/page.tsx | 33 ++++++++++++++++++++++++++++++-
+ src/app/knowledge/layout.tsx      | 20 +++++++++++++++++++
+ src/app/layout.tsx                | 12 ++++++-----
+ src/app/love/layout.tsx           | 20 +++++++++++++++++++
+ src/app/naming/layout.tsx         | 20 +++++++++++++++++++
+ 9 files changed, 179 insertions(+), 6 deletions(-)
+ create mode 100644 src/app/dream/layout.tsx
+ create mode 100644 src/app/face/layout.tsx
+ create mode 100644 src/app/fengshui/layout.tsx
+ create mode 100644 src/app/iching/layout.tsx
+ create mode 100644 src/app/knowledge/layout.tsx
+ create mode 100644 src/app/love/layout.tsx
+ create mode 100644 src/app/naming/layout.tsx
+
+diff --git a/src/app/dream/layout.tsx b/src/app/dream/layout.tsx
+new file mode 100644
+index 0000000..a9a8f0b
+--- /dev/null
++++ b/src/app/dream/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Dream Interpretation - Chinese Dream Dictionary | MysticSage",
++  description: "Free online Chinese dream interpretation. Discover the hidden meanings of your dreams through ancient Chinese wisdom. Dream dictionary with 100+ dream symbols explained.",
++  openGraph: {
++    title: "Dream Interpretation - Chinese Dream Dictionary | MysticSage",
++    description: "Free Chinese dream interpretation guide. Discover what your dreams mean.",
++    url: "https://mystic8zi.top/dream",
++  },
++  twitter: {
++    title: "Dream Interpretation - Chinese Dream Dictionary | MysticSage",
++    description: "Free Chinese dream interpretation and dream dictionary.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/dream" },
++};
++
++export default function DreamLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/face/layout.tsx b/src/app/face/layout.tsx
+new file mode 100644
+index 0000000..681bcf1
+--- /dev/null
++++ b/src/app/face/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Chinese Face Reading - Mian Xiang Fortune Telling | MysticSage",
++  description: "Free online Chinese face reading (Mian Xiang). Learn how facial features reveal personality, fortune, and destiny. Traditional Chinese physiognomy guide — no signup required.",
++  openGraph: {
++    title: "Chinese Face Reading - Mian Xiang | MysticSage",
++    description: "Free online face reading guide. Learn how facial features reveal fortune and destiny.",
++    url: "https://mystic8zi.top/face",
++  },
++  twitter: {
++    title: "Chinese Face Reading - Mian Xiang | MysticSage",
++    description: "Free online Chinese face reading guide.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/face" },
++};
++
++export default function FaceLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/fengshui/layout.tsx b/src/app/fengshui/layout.tsx
+new file mode 100644
+index 0000000..6c964ba
+--- /dev/null
++++ b/src/app/fengshui/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Feng Shui Guide - Chinese Geomancy Basics | MysticSage",
++  description: "Free Feng Shui guide. Learn Bagua, Five Elements, and how to harmonize your living space with ancient Chinese geomancy. Beginner-friendly Feng Shui tips.",
++  openGraph: {
++    title: "Feng Shui Guide - Chinese Geomancy Basics | MysticSage",
++    description: "Free Feng Shui guide. Learn Bagua, Five Elements, and space harmonization.",
++    url: "https://mystic8zi.top/fengshui",
++  },
++  twitter: {
++    title: "Feng Shui Guide - Chinese Geomancy Basics | MysticSage",
++    description: "Free Feng Shui guide for beginners.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/fengshui" },
++};
++
++export default function FengshuiLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/iching/layout.tsx b/src/app/iching/layout.tsx
+new file mode 100644
+index 0000000..02c888b
+--- /dev/null
++++ b/src/app/iching/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "I Ching Divination - Free Online Yijing Reading | MysticSage",
++  description: "Free online I Ching (Yijing) divination. Cast coins and receive ancient wisdom from the Book of Changes. Chinese oracle reading — no signup required.",
++  openGraph: {
++    title: "I Ching Divination - Free Online Yijing Reading | MysticSage",
++    description: "Free online I Ching divination. Cast coins and receive wisdom from the Book of Changes.",
++    url: "https://mystic8zi.top/iching",
++  },
++  twitter: {
++    title: "I Ching Divination - Free Online Yijing Reading | MysticSage",
++    description: "Free online I Ching divination and Yijing reading.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/iching" },
++};
++
++export default function IChingLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/knowledge/[slug]/page.tsx b/src/app/knowledge/[slug]/page.tsx
+index 7505e76..b6e5bb1 100644
+--- a/src/app/knowledge/[slug]/page.tsx
++++ b/src/app/knowledge/[slug]/page.tsx
+@@ -1,4 +1,4 @@
+-// Server component: exports generateStaticParams for static export
++import type { Metadata } from 'next';
+ import KnowledgeArticlePage from './KnowledgeArticlePage';
+ import { articles } from '@/lib/knowledge/articles';
+ 
+@@ -6,6 +6,37 @@ export function generateStaticParams() {
+   return Object.keys(articles).map((slug) => ({ slug }));
+ }
+ 
++export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
++  const slug = (await params).slug;
++  const article = articles[slug];
++  
++  if (!article) {
++    return { title: 'Article Not Found - MysticSage' };
++  }
++
++  const title = `${article.en.title} - Bazi Chinese Astrology | MysticSage`;
++  const description = `Learn about ${article.en.title}. Free Bazi reading and Chinese astrology guide at MysticSage.`;
++
++  return {
++    title,
++    description,
++    openGraph: {
++      title,
++      description,
++      url: `https://mystic8zi.top/knowledge/${slug}`,
++      siteName: 'MysticSage',
++      type: 'article',
++    },
++    twitter: {
++      title,
++      description,
++    },
++    alternates: {
++      canonical: `https://mystic8zi.top/knowledge/${slug}`,
++    },
++  };
++}
++
+ export default function Page() {
+   return <KnowledgeArticlePage />;
+ }
+diff --git a/src/app/knowledge/layout.tsx b/src/app/knowledge/layout.tsx
+new file mode 100644
+index 0000000..b157cf2
+--- /dev/null
++++ b/src/app/knowledge/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Bazi Knowledge Base - Learn Chinese Astrology | MysticSage",
++  description: "Free Chinese astrology knowledge base. Learn Bazi, Five Elements, Feng Shui, and more. 30+ in-depth articles covering day masters, zodiac, I Ching, face reading, and dream interpretation.",
++  openGraph: {
++    title: "Bazi Knowledge Base - Learn Chinese Astrology | MysticSage",
++    description: "Free Bazi knowledge base with 30+ articles on Chinese astrology, five elements, and more.",
++    url: "https://mystic8zi.top/knowledge",
++  },
++  twitter: {
++    title: "Bazi Knowledge Base - Learn Chinese Astrology | MysticSage",
++    description: "Free Chinese astrology knowledge base.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/knowledge" },
++};
++
++export default function KnowledgeLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index e1e6605..b192543 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -23,10 +23,12 @@ const notoSerifSC = Noto_Serif_SC({
+   weight: ["400", "600", "700"],
+ });
+ 
++// ⚠️ 首页专用metadata（强SEO标题）
++// 子页面请通过 layout.tsx 或 generateMetadata 自行覆盖
+ export const metadata: Metadata = {
+   title: "Free Bazi Reading Online — Chinese Astrology & Fortune Telling | MysticSage",
+   description:
+-    "Free online Bazi (Eight Characters) reading based on 5,000-year-old Chinese metaphysics. Discover your destiny, personality, and life path. Calculate your Four Pillars, check elemental balance, and get personalized insights — no signup required, all in your browser.",
++    "Free online Bazi (Eight Characters) reading based on 5,000-year-old Chinese metaphysics. Calculate your Four Pillars of Destiny, check Five Elements balance, and get personalized insights — no signup required, all in your browser.",
+   keywords: [
+     "free bazi reading", "bazi calculator", "Chinese astrology", "four pillars of destiny",
+     "八字", "Chinese fortune telling", "bazi chart", "day master", "five elements",
+@@ -38,9 +40,9 @@ export const metadata: Metadata = {
+     google: "C1nGHsDw8FE3xoZ-lOXGZFpxodNcrMe834fPZAQnITs",
+   },
+   openGraph: {
+-    title: "Free Bazi Reading — Discover Your Chinese Astrology Chart Online",
++    title: "Free Bazi Reading Online — Chinese Astrology & Fortune Telling | MysticSage",
+     description:
+-      "Get your free Bazi (Four Pillars) reading. Chinese astrology calculator reveals your destiny, personality, and fortune based on your birth date.",
++      "Free online Bazi (Eight Characters) reading. Calculate your Four Pillars of Destiny and check Five Elements balance.",
+     type: "website",
+     locale: "en_US",
+     siteName: "MysticSage",
+@@ -49,8 +51,8 @@ export const metadata: Metadata = {
+   },
+   twitter: {
+     card: "summary_large_image",
+-    title: "Free Bazi Reading Online — MysticSage",
+-    description: "Discover your destiny with free Chinese astrology. Calculate your Bazi chart, check elemental balance, and get personalized insights.",
++    title: "Free Bazi Reading Online — Chinese Astrology | MysticSage",
++    description: "Free online Bazi reading. Calculate your Four Pillars and get personalized insights.",
+   },
+   robots: {
+     index: true,
+diff --git a/src/app/love/layout.tsx b/src/app/love/layout.tsx
+new file mode 100644
+index 0000000..7633bcb
+--- /dev/null
++++ b/src/app/love/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Bazi Love Compatibility - Chinese Astrology Match | MysticSage",
++  description: "Free online Bazi love compatibility analysis. Compare two birth charts to discover your elemental compatibility. Chinese astrology love match calculator — no signup required.",
++  openGraph: {
++    title: "Bazi Love Compatibility - Chinese Astrology Match | MysticSage",
++    description: "Free online Bazi love compatibility analysis. Compare birth charts to discover your elemental match.",
++    url: "https://mystic8zi.top/love",
++  },
++  twitter: {
++    title: "Bazi Love Compatibility - Chinese Astrology Match | MysticSage",
++    description: "Free Bazi love compatibility analysis. Compare birth charts to discover your match.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/love" },
++};
++
++export default function LoveLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+diff --git a/src/app/naming/layout.tsx b/src/app/naming/layout.tsx
+new file mode 100644
+index 0000000..1c80b32
+--- /dev/null
++++ b/src/app/naming/layout.tsx
+@@ -0,0 +1,20 @@
++import type { Metadata } from 'next';
++
++export const metadata: Metadata = {
++  title: "Chinese Baby Name Generator - Bazi Naming | MysticSage",
++  description: "Free Chinese name generator based on Bazi (Eight Characters). Find an auspicious Chinese name with the right Five Elements balance. Name suggestions with meaning analysis.",
++  openGraph: {
++    title: "Chinese Baby Name Generator - Bazi Naming | MysticSage",
++    description: "Free Chinese name generator based on Bazi. Find the perfect auspicious name.",
++    url: "https://mystic8zi.top/naming",
++  },
++  twitter: {
++    title: "Chinese Baby Name Generator - Bazi Naming | MysticSage",
++    description: "Free Chinese name generator based on Five Elements balance.",
++  },
++  alternates: { canonical: "https://mystic8zi.top/naming" },
++};
++
++export default function NamingLayout({ children }: { children: React.ReactNode }) {
++  return children;
++}
+-- 
+2.43.0
+
