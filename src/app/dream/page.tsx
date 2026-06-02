@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { useLanguage } from '@/lib/use-language';
+import Footer from '@/components/Footer';
 
 const DREAM_SYMBOLS = [
   { symbol_en: 'Water', symbol_zh: '水', element: 'Water',
@@ -58,14 +58,12 @@ const FIVE_ELEMENTS_IN_DREAMS: Record<string, { en: string; zh: string }> = {
 };
 
 export default function DreamPage() {
-  const [lang, setLang] = useLanguage();
-  const isEn = lang === 'en';
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
 
   const filtered = search
     ? DREAM_SYMBOLS.filter(s =>
-        (isEn ? s.symbol_en : s.symbol_zh).toLowerCase().includes(search.toLowerCase()))
+        s.symbol_en.toLowerCase().includes(search.toLowerCase()))
     : DREAM_SYMBOLS;
 
   return (
@@ -75,19 +73,19 @@ export default function DreamPage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '🌙 Dream Interpretation' : '🌙 解梦'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">🌙 Dream Interpretation</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            {isEn ? 'Discover the hidden meanings behind your dreams' : '探索梦境背后的深层含义'}
+            Discover the hidden meanings behind your dreams
           </p>
 
           {/* Search */}
           <div className="max-w-md mx-auto mb-8">
             <input type="text"
-              placeholder={isEn ? 'Search for a dream symbol... (e.g. water, snake, flying)' : '搜索梦境符号...（如：水、蛇、飞翔）'}
+              placeholder="Search for a dream symbol..."
               value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full bg-[#0f1117]/90 border border-[#1a1d2a] rounded-xl px-4 py-3 text-[#e8dcc8] text-sm placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40"/>
+              className="w-full glass-card rounded-xl px-4 py-3 text-[#e8dcc8] text-sm placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40"/>
           </div>
 
           {/* Symbols grid */}
@@ -95,20 +93,20 @@ export default function DreamPage() {
             {filtered.map((sym, i) => (
               <div key={i}
                 className={`bg-[#0f1117]/70 border rounded-xl p-4 cursor-pointer transition-all ${
-                  selected === (isEn ? sym.symbol_en : sym.symbol_zh)
+                  selected === sym.symbol_en
                     ? 'border-[#d4af37]/40 shadow-[0_0_12px_rgba(212,175,55,0.08)]'
                     : 'border-[rgba(212,175,55,0.06)] hover:border-[rgba(212,175,55,0.15)]'
                 }`}
-                onClick={() => setSelected(selected === (isEn ? sym.symbol_en : sym.symbol_zh) ? null : (isEn ? sym.symbol_en : sym.symbol_zh))}
+                onClick={() => setSelected(selected === sym.symbol_en ? null : sym.symbol_en)}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-sm font-semibold gold-text">{isEn ? sym.symbol_en : sym.symbol_zh}</h3>
+                  <h3 className="text-sm font-semibold gold-text">sym.symbol_en</h3>
                   <span className="text-[10px] px-1.5 py-0.5 bg-[rgba(212,175,55,0.1)] text-[#f0d68a] rounded border border-[rgba(212,175,55,0.2)]">{sym.element}</span>
                 </div>
                 <p className="text-[#9b8e7a] text-xs leading-relaxed">
-                  {selected === (isEn ? sym.symbol_en : sym.symbol_zh)
-                    ? (isEn ? sym.meaning_en : sym.meaning_zh)
-                    : (isEn ? 'Click to read interpretation' : '点击查看解读')}
+                  {selected === sym.symbol_en
+                    ? sym.meaning_en
+                    : 'Click to read interpretation'}
                 </p>
               </div>
             ))}
@@ -116,25 +114,21 @@ export default function DreamPage() {
 
           {/* Elements in dreams */}
           <div className="border-t border-[rgba(212,175,55,0.06)] pt-8">
-            <h2 className="text-lg font-semibold gold-text text-center mb-6">{isEn ? 'Elements in Dreams' : '梦境五行'}</h2>
+            <h2 className="text-lg font-semibold gold-text text-center mb-6">Elements in Dreams</h2>
             <div className="grid md:grid-cols-5 gap-3">
               {Object.entries(FIVE_ELEMENTS_IN_DREAMS).map(([el, data], i) => (
-                <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-3 text-center">
+                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-3 text-center">
                   <div className="text-lg mb-1">
                     {el === 'wood' ? '🌳' : el === 'fire' ? '🔥' : el === 'earth' ? '⛰️' : el === 'metal' ? '⚔️' : '💧'}
                   </div>
-                  <p className="text-[#9b8e7a] text-[10px] leading-relaxed">{isEn ? data.en : data.zh}</p>
+                  <p className="text-[#9b8e7a] text-[10px] leading-relaxed">data.en</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

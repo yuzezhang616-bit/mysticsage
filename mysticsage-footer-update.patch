@@ -1,0 +1,320 @@
+From f89dddc5e20d66476fa4b3792b08cbe60f4bab92 Mon Sep 17 00:00:00 2001
+From: MysticSage Bot <mysticsage-bot@users.noreply.github.com>
+Date: Tue, 2 Jun 2026 15:05:14 +0800
+Subject: [PATCH] =?UTF-8?q?feat:=20=E6=8F=90=E5=8F=96=E5=85=B1=E4=BA=ABFoo?=
+ =?UTF-8?q?ter=E7=BB=84=E4=BB=B6=EF=BC=8C=E5=85=A8=E7=AB=99=E7=BB=9F?=
+ =?UTF-8?q?=E4=B8=80=E5=BA=95=E9=83=A8=E5=AF=BC=E8=88=AA?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- 创建 src/components/Footer.tsx 共享组件
+- 包含4列导航（Tools/Learn/More/About）
+- 底部版权+Sitemap链接
+- 支持中英文切换
+- 支持首页不带lang参数
+- 替换8个页面中的内联footer代码
+- 以后改footer只需要改一个文件
+---
+ src/app/dream/page.tsx     |  7 +---
+ src/app/face/page.tsx      |  7 +---
+ src/app/fengshui/page.tsx  |  7 +---
+ src/app/iching/page.tsx    |  7 +---
+ src/app/knowledge/page.tsx |  7 +---
+ src/app/love/page.tsx      |  7 +---
+ src/app/naming/page.tsx    |  7 +---
+ src/app/page.tsx           |  7 +---
+ src/components/Footer.tsx  | 81 ++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 97 insertions(+), 40 deletions(-)
+ create mode 100644 src/components/Footer.tsx
+
+diff --git a/src/app/dream/page.tsx b/src/app/dream/page.tsx
+index 3b1df72..24549fe 100644
+--- a/src/app/dream/page.tsx
++++ b/src/app/dream/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ const DREAM_SYMBOLS = [
+@@ -130,11 +131,7 @@ export default function DreamPage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/face/page.tsx b/src/app/face/page.tsx
+index d01d9ae..7a35bae 100644
+--- a/src/app/face/page.tsx
++++ b/src/app/face/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState, useRef } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ // ===== 面部特征选项 =====
+@@ -332,11 +333,7 @@ export default function FaceReadingPage() {
+           )}
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/fengshui/page.tsx b/src/app/fengshui/page.tsx
+index 96d5f36..8066d5a 100644
+--- a/src/app/fengshui/page.tsx
++++ b/src/app/fengshui/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ const TIPS = [
+@@ -93,11 +94,7 @@ export default function FengShuiPage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/iching/page.tsx b/src/app/iching/page.tsx
+index 92db831..5a01b6c 100644
+--- a/src/app/iching/page.tsx
++++ b/src/app/iching/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ const HEXAGRAMS = [
+@@ -116,11 +117,7 @@ export default function IChingPage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/knowledge/page.tsx b/src/app/knowledge/page.tsx
+index bf1a2dd..7c6995a 100644
+--- a/src/app/knowledge/page.tsx
++++ b/src/app/knowledge/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ 
+ const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: string}> = [
+   {
+@@ -226,11 +227,7 @@ export default function KnowledgePage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">{'\u2726'} MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/love/page.tsx b/src/app/love/page.tsx
+index 78f2c3a..83489f1 100644
+--- a/src/app/love/page.tsx
++++ b/src/app/love/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ export default function LoveMatchPage() {
+@@ -174,11 +175,7 @@ export default function LoveMatchPage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/naming/page.tsx b/src/app/naming/page.tsx
+index 6184428..0db0cd7 100644
+--- a/src/app/naming/page.tsx
++++ b/src/app/naming/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import NavBar from '@/components/NavBar';
++import Footer from '@/components/Footer';
+ import { useLanguage } from '@/lib/use-language';
+ 
+ const ELEMENT_CHARS: Record<string, { en: string; zh: string; chars: { char: string; meaning: string; element: string }[] }> = {
+@@ -205,11 +206,7 @@ export default function NamingPage() {
+           </div>
+         </div>
+ 
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
+-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
+-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
+-          </div>
+-        </footer>
++        <Footer lang={lang} />
+       </main>
+     </>
+   );
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index b1c2199..92398c4 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -7,6 +7,7 @@ import { calculateBazi } from '@/lib/bazi';
+ import { generateSeedReading } from '@/lib/reading/seed-readings';
+ import BaziChart from '@/components/BaziChart';
+ import ReadingPanel from '@/components/ReadingPanel';
++import Footer from "@/components/Footer";
+ import NavBar from '@/components/NavBar';
+ import { useLanguage } from '@/lib/use-language';
+ 
+@@ -235,11 +236,7 @@ export default function Home() {
+         </div>
+ 
+         {/* 页脚 */}
+-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-16">
+-          <div className="max-w-5xl mx-auto px-4 py-8 text-center">
+-            <p className="text-sm text-[#3a3528]">✦ MysticSage — Ancient wisdom for the modern soul ✦</p>
+-          </div>
+-        </footer>
++        <Footer />
+       </main>
+     </>
+   );
+diff --git a/src/components/Footer.tsx b/src/components/Footer.tsx
+new file mode 100644
+index 0000000..442d413
+--- /dev/null
++++ b/src/components/Footer.tsx
+@@ -0,0 +1,81 @@
++'use client';
++
++interface FooterProps {
++  lang?: 'en' | 'zh';
++}
++
++export default function Footer({ lang = 'en' }: FooterProps) {
++  const isEn = lang === 'en';
++
++  return (
++    <footer className="border-t border-[rgba(212,175,55,0.06)] mt-16">
++      <div className="max-w-5xl mx-auto px-4 py-10">
++        {/* Main footer grid */}
++        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
++          {/* Column 1: Tools */}
++          <div>
++            <h4 className="text-xs font-semibold gold-text mb-3">
++              {isEn ? 'Tools' : '工具'}
++            </h4>
++            <ul className="space-y-1.5">
++              <li><a href="/" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Bazi Reading' : '八字排盘'}</a></li>
++              <li><a href="/love" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Love Match' : '八字合婚'}</a></li>
++              <li><a href="/naming" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Name Generator' : '起名推荐'}</a></li>
++              <li><a href="/iching" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">I Ching</a></li>
++            </ul>
++          </div>
++
++          {/* Column 2: Learn */}
++          <div>
++            <h4 className="text-xs font-semibold gold-text mb-3">
++              {isEn ? 'Learn' : '学习'}
++            </h4>
++            <ul className="space-y-1.5">
++              <li><a href="/knowledge" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Knowledge Base' : '命理知识库'}</a></li>
++              <li><a href="/knowledge/what-is-bazi" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">What is Bazi</a></li>
++              <li><a href="/knowledge/five-elements" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Five Elements' : '五行'}</a></li>
++              <li><a href="/knowledge/chinese-zodiac-complete" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Zodiac Guide' : '生肖指南'}</a></li>
++            </ul>
++          </div>
++
++          {/* Column 3: More */}
++          <div>
++            <h4 className="text-xs font-semibold gold-text mb-3">
++              {isEn ? 'More' : '更多'}
++            </h4>
++            <ul className="space-y-1.5">
++              <li><a href="/fengshui" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">Feng Shui</a></li>
++              <li><a href="/face" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Face Reading' : '面相'}</a></li>
++              <li><a href="/dream" className="text-[10px] text-[#6b5f4a] hover:text-[#d4af37] transition-colors">{isEn ? 'Dream Dictionary' : '解梦'}</a></li>
++            </ul>
++          </div>
++
++          {/* Column 4: About */}
++          <div>
++            <h4 className="text-xs font-semibold gold-text mb-3">
++              {isEn ? 'About' : '关于'}
++            </h4>
++            <p className="text-[10px] text-[#4a4030] leading-relaxed">
++              {isEn
++                ? 'Free online Chinese astrology platform. All calculations run in your browser — nothing is uploaded to any server.'
++                : '免费的在线中国命理平台。所有计算在浏览器本地运行，不上传任何数据。'}
++            </p>
++          </div>
++        </div>
++
++        {/* Bottom bar */}
++        <div className="border-t border-[rgba(212,175,55,0.04)] pt-6">
++          <div className="flex flex-col md:flex-row items-center justify-between gap-2">
++            <p className="text-xs text-[#3a3528]">
++              ✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}
++            </p>
++            <div className="flex items-center gap-3">
++              <span className="text-[10px] text-[#3a3528]">© {new Date().getFullYear()} MysticSage</span>
++              <a href="/sitemap.xml" className="text-[10px] text-[#3a3528] hover:text-[#6b5f4a] transition-colors">Sitemap</a>
++            </div>
++          </div>
++        </div>
++      </div>
++    </footer>
++  );
++}
+-- 
+2.43.0
+

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 
 const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: string}> = [
   {
@@ -176,7 +177,6 @@ const ARTICLES: Array<{slug: string; icon: string; title_en: string; title_zh: s
 
 export default function KnowledgePage() {
   const [lang, setLang] = useState<'en'|'zh'>('en');
-  const isEn = lang === 'en';
 
   return (
     <>
@@ -185,11 +185,11 @@ export default function KnowledgePage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '\uD83D\uDCDA Knowledge Base' : '\uD83D\uDCDA 命理知识库'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">\uD83D\uDCDA Knowledge Base</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            {isEn ? 'Learn about Bazi, Five Elements, Feng Shui, and more ancient Chinese wisdom' : '学习八字、五行、风水等中华传统智慧知识'}
+            Learn about Bazi, Five Elements, Feng Shui, and more ancient Chinese wisdom
           </p>
 
           <div className="grid gap-4">
@@ -200,11 +200,11 @@ export default function KnowledgePage() {
                   <span className="text-2xl">{article.icon}</span>
                   <div className="flex-1 min-w-0">
                     <h2 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">
-                      {isEn ? article.title_en : article.title_zh}
+                      article.title_en
                     </h2>
                     <div className="mt-2">
                       <span className="text-[10px] text-[#d4af37]/60 group-hover:text-[#d4af37] transition-colors">
-                        {isEn ? 'Read more \u2192' : '阅读全文 \u2192'}
+                        Read more \u2192
                       </span>
                     </div>
                   </div>
@@ -216,21 +216,15 @@ export default function KnowledgePage() {
           {/* SEO-friendly intro text */}
           <div className="mt-12 border-t border-[rgba(212,175,55,0.06)] pt-8">
             <div className="text-center max-w-2xl mx-auto">
-              <h2 className="text-lg font-semibold gold-text mb-4">{isEn ? 'About MysticSage' : '关于MysticSage免费算命'}</h2>
+              <h2 className="text-lg font-semibold gold-text mb-4">About MysticSage</h2>
               <p className="text-[#9b8e7a] text-xs leading-relaxed">
-                {isEn
-                  ? 'MysticSage is a free online Chinese astrology platform. Our tools include Bazi (Eight Characters) fortune telling, love compatibility analysis, Chinese name suggestion, I Ching divination, Feng Shui knowledge, face reading, and dream interpretation. All calculations are based on traditional Chinese metaphysics and run entirely in your browser — no data is uploaded to any server.'
-                  : 'MysticSage 是一个免费的在线八字命理平台。我们的工具包括八字算命、八字合婚配对、起名推荐、周易占卜、风水知识、面相分析和解梦。所有计算基于中国传统命理学，完全在浏览器本地运行——不上传任何数据到服务器。'}
+                MysticSage is a free online Chinese astrology platform. Our tools include Bazi (Eight Characters) fortune telling, love compatibility analysis, Chinese name suggestion, I Ching divination, Feng Shui knowledge, face reading, and dream interpretation. All calculations are based on traditional Chinese metaphysics and run entirely in your browser — no data is uploaded to any server.
               </p>
             </div>
           </div>
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">{'\u2726'} MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

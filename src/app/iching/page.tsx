@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { useLanguage } from '@/lib/use-language';
+import Footer from '@/components/Footer';
 
 const HEXAGRAMS = [
   { num:1, name_en:'Qian — The Creative', name_zh:'乾为天', desc_en:'Heaven above, heaven below — pure creative power at its strongest. This is a time for bold action and leadership. The dragon is in the sky — nothing can stop you but yourself. Act with integrity and vision.', desc_zh:'天在上，天在下——纯阳至刚，创造力最强大的时刻。这是大胆行动和领导的时机。飞龙在天——除了你自己，没有什么能阻挡你。以正直和远见行事。', img:'☰☰' },
@@ -42,8 +42,6 @@ function trigramToNumber(lines: number[]): number {
 }
 
 export default function IChingPage() {
-  const [lang, setLang] = useLanguage();
-  const isEn = lang === 'en';
   const [question, setQuestion] = useState('');
   const [hexagram, setHexagram] = useState<typeof HEXAGRAMS[0] | null>(null);
   const [cast, setCast] = useState(false);
@@ -63,43 +61,43 @@ export default function IChingPage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-3xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '☯ I Ching Oracle' : '☯ 周易占卜'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">☯ I Ching Oracle</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            {isEn ? 'Cast the coins and receive ancient wisdom from the Book of Changes' : '抛掷三枚硬币，从《易经》中获取古老的智慧指引'}
+            Cast the coins and receive ancient wisdom from the Book of Changes
           </p>
 
-          <div className="max-w-md mx-auto bg-[#0f1117]/90 mystical-border rounded-xl p-6 mb-8">
+          <div className="max-w-md mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-[#9b8e7a] mb-1 block">{isEn ? 'Your Question (optional)' : '你的问题（选填）'}</label>
-                <input type="text" placeholder={isEn ? 'e.g. Should I take this job?' : '如：我该接受这份工作吗？'} value={question} onChange={e=>setQuestion(e.target.value)}
+                <label className="text-xs text-[#9b8e7a] mb-1 block">Your Question (optional)</label>
+                <input type="text" placeholder="e.g. Should I take this job?" value={question} onChange={e=>setQuestion(e.target.value)}
                   className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-3 py-2.5 text-[#e8dcc8] text-sm focus:border-[#d4af37]/40"/>
               </div>
               <button onClick={handleCast}
                 className="gold-glow w-full bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] py-3 rounded-xl font-semibold cursor-pointer flex items-center justify-center gap-2">
-                <span>{isEn ? '🎲 Cast the Coins' : '🎲 投掷铜钱'}</span>
+                <span>🎲 Cast the Coins</span>
               </button>
             </div>
           </div>
 
           {hexagram && (
             <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="bg-[#0f1117]/90 mystical-border rounded-xl p-6 text-center">
+              <div className="bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
                 <div className="text-5xl mb-3">{hexagram.img}</div>
-                <h2 className="text-xl font-bold gold-text mb-1">#{hexagram.num} {isEn ? hexagram.name_en : hexagram.name_zh}</h2>
-                <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85 mt-4">{isEn ? hexagram.desc_en : hexagram.desc_zh}</p>
+                <h2 className="text-xl font-bold gold-text mb-1">#{hexagram.num} hexagram.name_en</h2>
+                <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85 mt-4">hexagram.desc_en</p>
               </div>
 
               <div className="bg-gradient-to-r from-[rgba(212,175,55,0.08)] to-[rgba(168,135,46,0.05)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
-                <p className="text-xs text-[#9b8e7a]">{isEn ? '💡 The I Ching offers guidance, not predictions. Reflect on how this wisdom applies to your situation.' : '💡 易经提供指引而非预言。思考这份智慧如何应用于你的处境。'}</p>
+                <p className="text-xs text-[#9b8e7a]">💡 The I Ching offers guidance, not predictions. Reflect on how this wisdom applies to your situation.</p>
               </div>
             </div>
           )}
 
           <div className="mt-12 border-t border-[rgba(212,175,55,0.06)] pt-8">
-            <h2 className="text-lg font-semibold gold-text text-center mb-6">{isEn ? 'About I Ching' : '关于周易'}</h2>
+            <h2 className="text-lg font-semibold gold-text text-center mb-6">About I Ching</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
                 { en:{t:'The Book of Changes',d:'The I Ching is one of the oldest Chinese classics, dating back over 3,000 years. It is a divination system and philosophical text that reveals patterns of change in the universe.'}, zh:{t:'群经之首',d:'《易经》是中国最古老的经典之一，距今已有三千多年历史。它既是占卜系统，也是揭示宇宙变化规律的哲学著作。'} },
@@ -107,20 +105,16 @@ export default function IChingPage() {
                 { en:{t:'How to Consult',d:'Traditionally, three coins are tossed six times. Each toss generates a yin or yang line. The resulting hexagram is then interpreted as guidance for your question.'}, zh:{t:'如何占卜',d:'传统方法是用三枚铜钱投掷六次。每一次投掷产生一条阴爻或阳爻，由此得到的卦象即为问题的指引。'} },
                 { en:{t:'Philosophical Wisdom',d:'Beyond divination, the I Ching offers profound insights about change, balance, and the nature of reality. Its wisdom is as relevant today as it was three millennia ago.'}, zh:{t:'哲学智慧',d:'超越占卜层面，易经提供了关于变化、平衡和现实本质的深刻洞见。它的智慧在今天与三千年前一样具有启发性。'} },
               ].map((item,i) => (
-                <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-4">
-                  <h4 className="text-xs font-semibold gold-text mb-2">{isEn ? item.en.t : item.zh.t}</h4>
-                  <p className="text-[#9b8e7a] text-xs leading-relaxed">{isEn ? item.en.d : item.zh.d}</p>
+                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4">
+                  <h4 className="text-xs font-semibold gold-text mb-2">item.en.t</h4>
+                  <p className="text-[#9b8e7a] text-xs leading-relaxed">item.en.d</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

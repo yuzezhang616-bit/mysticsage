@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { useLanguage } from '@/lib/use-language';
+import Footer from '@/components/Footer';
 
 const ELEMENT_CHARS: Record<string, { en: string; zh: string; chars: { char: string; meaning: string; element: string }[] }> = {
   wood: {
@@ -83,8 +83,6 @@ const ELEMENT_CHARS: Record<string, { en: string; zh: string; chars: { char: str
 };
 
 export default function NamingPage() {
-  const [lang, setLang] = useLanguage();
-  const isEn = lang === 'en';
   const [surname, setSurname] = useState('');
   const [birthYear, setBirthYear] = useState('');
   const [gender, setGender] = useState<'male'|'female'>('male');
@@ -113,13 +111,13 @@ export default function NamingPage() {
         name: surname + c.char,
         meaning: c.meaning,
         element: c.element,
-        reason: isEn ? `Nourishes your ${el} element` : `生助你的${el === 'wood' ? '木' : el === 'fire' ? '火' : el === 'earth' ? '土' : el === 'metal' ? '金' : '水'}`,
+        reason: `Nourishes your ${el} element`,
       })),
       ...mainNames.slice(0, 3).map(c => ({
         name: surname + c.char,
         meaning: c.meaning,
         element: c.element,
-        reason: isEn ? `Strengthens your ${el} element` : `补益你的${el === 'wood' ? '木' : el === 'fire' ? '火' : el === 'earth' ? '土' : el === 'metal' ? '金' : '水'}`,
+        reason: `Strengthens your ${el} element`,
       })),
     ];
 
@@ -133,46 +131,46 @@ export default function NamingPage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-3xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '📛 Chinese Name Suggestion' : '📛 八字起名'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">📛 Chinese Name Suggestion</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            {isEn ? 'Find a name that harmonizes with your destiny' : '根据八字五行，为你推荐吉祥的名字'}
+            Find a name that harmonizes with your destiny
           </p>
 
-          <div className="max-w-md mx-auto bg-[#0f1117]/90 mystical-border rounded-xl p-6 mb-8">
+          <div className="max-w-md mx-auto bg-black/20 backdrop-blur-xl border border-white/[0.07] rounded-xl shadow-lg shadow-black/30 p-6 mb-8">
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-[#9b8e7a] mb-1 block">{isEn ? 'Surname (optional)' : '姓氏（选填）'}</label>
-                <input type="text" placeholder={isEn ? 'e.g. 李, 王, 张' : '如：李、王、张'} value={surname} onChange={e=>setSurname(e.target.value)}
+                <label className="text-xs text-[#9b8e7a] mb-1 block">Surname (optional)</label>
+                <input type="text" placeholder="e.g. Li, Wang, Zhang" value={surname} onChange={e=>setSurname(e.target.value)}
                   className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-3 py-2.5 text-[#e8dcc8] text-sm focus:border-[#d4af37]/40"/>
               </div>
               <div>
-                <label className="text-xs text-[#9b8e7a] mb-1 block">{isEn ? 'Birth Year' : '出生年份'}</label>
+                <label className="text-xs text-[#9b8e7a] mb-1 block">Birth Year</label>
                 <input type="number" placeholder="1990" value={birthYear} onChange={e=>setBirthYear(e.target.value)}
                   className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-3 py-2.5 text-[#e8dcc8] text-sm focus:border-[#d4af37]/40"/>
               </div>
               <div>
-                <label className="text-xs text-[#9b8e7a] mb-1 block">{isEn ? 'Gender' : '性别'}</label>
+                <label className="text-xs text-[#9b8e7a] mb-1 block">Gender</label>
                 <div className="flex gap-2">
                   {(['male','female'] as const).map(g => (
                     <button key={g} onClick={()=>setGender(g)}
                       className={`flex-1 py-2.5 rounded-lg border text-sm font-medium transition-all ${gender===g?'border-[#d4af37] bg-[#d4af37]/10 text-[#f0d68a]':'border-[#1a1d2a] text-[#6b5f4a]'}`}>
-                      {g==='male'?(isEn?'♂ Male':'♂ 男'):(isEn?'♀ Female':'♀ 女')}
+                      {g==='male'?'♂ Male':'♀ Female'}
                     </button>
                   ))}
                 </div>
               </div>
               <button onClick={handleSubmit}
                 className="gold-glow w-full bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] py-3 rounded-xl font-semibold cursor-pointer">
-                {isEn ? '📛 Generate Names' : '📛 起名推荐'}
+                📛 Generate Names
               </button>
             </div>
           </div>
 
           {results && (
             <div className="space-y-3 animate-in fade-in duration-500">
-              <h3 className="text-sm font-semibold gold-text text-center mb-4">{isEn ? 'Recommended Names' : '推荐的名字'}</h3>
+              <h3 className="text-sm font-semibold gold-text text-center mb-4">Recommended Names</h3>
               {results.map((r,i) => (
                 <div key={i} className="bg-[#0f1117]/90 border border-[rgba(212,175,55,0.08)] rounded-xl p-4 flex items-center gap-4">
                   <div className="text-2xl gold-text font-bold w-14 text-center">{r.name.slice(-1)}</div>
@@ -188,7 +186,7 @@ export default function NamingPage() {
           )}
 
           <div className="mt-12 border-t border-[rgba(212,175,55,0.06)] pt-8">
-            <h2 className="text-lg font-semibold gold-text text-center mb-6">{isEn ? 'The Art of Chinese Naming' : '起名之道'}</h2>
+            <h2 className="text-lg font-semibold gold-text text-center mb-6">The Art of Chinese Naming</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
                 { en:{t:'Five Elements Balance',d:'A well-chosen name considers the Five Elements of one\'s birth chart, selecting characters that supplement any elemental deficiencies.'}, zh:{t:'五行补益',d:'好的名字要考虑八字五行的旺衰，选择补益所缺五行的汉字。'} },
@@ -196,20 +194,16 @@ export default function NamingPage() {
                 { en:{t:'Sound and Harmony',d:'The pronunciation of a name matters — it should flow beautifully and harmonize with the surname for a pleasing rhythm.'}, zh:{t:'音韵和谐',d:'名字的读音非常重要——应与姓氏搭配流畅悦耳，形成优美的韵律。'} },
                 { en:{t:'Generational Tradition',d:'Some families follow generational naming patterns, where siblings share a common character in their names.'}, zh:{t:'辈分传统',d:'一些家族遵循辈分起名的传统，兄弟姐妹的名字中共享同一个字。'} },
               ].map((item,i) => (
-                <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-4">
-                  <h4 className="text-xs font-semibold gold-text mb-2">{isEn ? item.en.t : item.zh.t}</h4>
-                  <p className="text-[#9b8e7a] text-xs leading-relaxed">{isEn ? item.en.d : item.zh.d}</p>
+                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4">
+                  <h4 className="text-xs font-semibold gold-text mb-2">item.en.t</h4>
+                  <p className="text-[#9b8e7a] text-xs leading-relaxed">item.en.d</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

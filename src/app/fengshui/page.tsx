@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { useLanguage } from '@/lib/use-language';
+import Footer from '@/components/Footer';
 
 const TIPS = [
   {
@@ -32,8 +32,6 @@ const TIPS = [
 ];
 
 export default function FengShuiPage() {
-  const [lang, setLang] = useLanguage();
-  const isEn = lang === 'en';
 
   return (
     <>
@@ -42,19 +40,17 @@ export default function FengShuiPage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '🏯 Feng Shui Wisdom' : '🏯 风水知识'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">🏯 Feng Shui Wisdom</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            {isEn ? 'Harmonize your environment and invite positive energy into your life' : '调和你的环境，邀请正能量进入你的生活'}
+            Harmonize your environment and invite positive energy into your life
           </p>
 
           {/* Intro */}
           <div className="bg-gradient-to-r from-[rgba(212,175,55,0.08)] to-[rgba(168,135,46,0.05)] border border-[rgba(212,175,55,0.15)] rounded-xl p-6 mb-8">
             <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85">
-              {isEn
-                ? 'Feng Shui, meaning "wind and water," is the ancient Chinese art of harmonizing your environment to promote health, happiness, and prosperity. By understanding how energy (Qi) flows through your space, you can create an environment that supports your goals and nurtures your well-being.'
-                : '风水，意为"风和水"，是调和环境以促进健康、幸福和繁荣的中国古老艺术。通过理解能量（气）如何在你的空间中流动，你可以创造一个支持你目标、滋养你福祉的环境。'}
+              Feng Shui, meaning "wind and water," is the ancient Chinese art of harmonizing your environment to promote health, happiness, and prosperity. By understanding how energy (Qi) flows through your space, you can create an environment that supports your goals and nurtures your well-being.
             </p>
           </div>
 
@@ -65,8 +61,8 @@ export default function FengShuiPage() {
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{tip.icon}</span>
                   <div>
-                    <h3 className="text-sm font-semibold gold-text mb-1">{isEn ? tip.en.t : tip.zh.t}</h3>
-                    <p className="text-[#9b8e7a] text-xs leading-relaxed">{isEn ? tip.en.d : tip.zh.d}</p>
+                    <h3 className="text-sm font-semibold gold-text mb-1">tip.en.t</h3>
+                    <p className="text-[#9b8e7a] text-xs leading-relaxed">tip.en.d</p>
                   </div>
                 </div>
               </div>
@@ -75,7 +71,7 @@ export default function FengShuiPage() {
 
           {/* Five Elements */}
           <div className="border-t border-[rgba(212,175,55,0.06)] pt-8">
-            <h2 className="text-lg font-semibold gold-text text-center mb-6">{isEn ? 'The Five Elements in Feng Shui' : '风水五行'}</h2>
+            <h2 className="text-lg font-semibold gold-text text-center mb-6">The Five Elements in Feng Shui</h2>
             <div className="grid grid-cols-5 gap-3">
               {[
                 { icon:'🌳', en:'Wood - Growth, New Beginnings, East', zh:'木 — 生长、新开始、东方' },
@@ -84,20 +80,16 @@ export default function FengShuiPage() {
                 { icon:'⚔️', en:'Metal - Clarity, Completion, West', zh:'金 — 清晰、完成、西方' },
                 { icon:'💧', en:'Water - Wisdom, Career, North', zh:'水 — 智慧、事业、北方' },
               ].map((el, i) => (
-                <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-3 text-center">
+                <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-3 text-center">
                   <div className="text-2xl mb-2">{el.icon}</div>
-                  <p className="text-[#9b8e7a] text-[10px] leading-relaxed">{isEn ? el.en : el.zh}</p>
+                  <p className="text-[#9b8e7a] text-[10px] leading-relaxed">el.en</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

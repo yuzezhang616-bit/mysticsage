@@ -1,0 +1,334 @@
+From b38cc3cdfcdcfd368283bc59ecb401af7b076664 Mon Sep 17 00:00:00 2001
+From: MysticSage Bot <mysticsage-bot@users.noreply.github.com>
+Date: Tue, 2 Jun 2026 15:56:46 +0800
+Subject: [PATCH] =?UTF-8?q?feat:=20Cinematic=20UI=E6=94=B9=E9=80=A0=20-=20?=
+ =?UTF-8?q?=E7=8E=BB=E7=92=83=E8=B4=A8=E6=84=9F=E5=8D=A1=E7=89=87+?=
+ =?UTF-8?q?=E6=9A=97=E5=A4=9C=E5=BD=B1=E9=99=A2=E9=A3=8E=E6=A0=BC?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- globals.css: 新增 glass-card / cinematic-glow 样式
+- NavBar: 改为玻璃透明材质 (bg-black/30 backdrop-blur-2xl)
+- 首页表单卡片: 改用 glass-card
+- 首页功能卡片/统计/FAQ/知识库卡片: 全部改用 glass-card
+- 知识文章页: CTA/分享/相关推荐区域改用 glass-card
+- ReadingPanel: 所有区块改用 glass-card
+- Footer: 改为玻璃背景
+- 视频叠加层简化
+- 金色辉光按钮重新设计
+---
+ src/app/dream/page.tsx                        |  2 +-
+ src/app/face/page.tsx                         |  2 +-
+ src/app/globals.css                           | 54 +++++++++++++------
+ .../knowledge/[slug]/KnowledgeArticlePage.tsx |  8 +--
+ src/app/page.tsx                              | 20 +++----
+ src/components/Footer.tsx                     |  2 +-
+ src/components/NavBar.tsx                     | 32 ++++++-----
+ src/components/ReadingPanel.tsx               |  4 +-
+ 8 files changed, 73 insertions(+), 51 deletions(-)
+
+diff --git a/src/app/dream/page.tsx b/src/app/dream/page.tsx
+index 5f7a029..59a40d7 100644
+--- a/src/app/dream/page.tsx
++++ b/src/app/dream/page.tsx
+@@ -85,7 +85,7 @@ export default function DreamPage() {
+             <input type="text"
+               placeholder="Search for a dream symbol..."
+               value={search} onChange={e => setSearch(e.target.value)}
+-              className="w-full bg-[#0f1117]/90 border border-[#1a1d2a] rounded-xl px-4 py-3 text-[#e8dcc8] text-sm placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40"/>
++              className="w-full glass-card rounded-xl px-4 py-3 text-[#e8dcc8] text-sm placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40"/>
+           </div>
+ 
+           {/* Symbols grid */}
+diff --git a/src/app/face/page.tsx b/src/app/face/page.tsx
+index b36b677..365f533 100644
+--- a/src/app/face/page.tsx
++++ b/src/app/face/page.tsx
+@@ -241,7 +241,7 @@ export default function FaceReadingPage() {
+               </div>
+ 
+               {/* Current zone card */}
+-              <div className="bg-[#0f1117]/90 mystical-border rounded-xl p-6 animate-in fade-in">
++              <div className="glass-card rounded-xl p-6 animate-in fade-in">
+                 <div className="text-center mb-4">
+                   <span className="text-2xl">{ZONES[currentZone].icon}</span>
+                   <h3 className="text-base font-semibold gold-text mt-2">{ZONES[currentZone].en}</h3>
+diff --git a/src/app/globals.css b/src/app/globals.css
+index 33f7246..8b48de3 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -61,25 +61,34 @@ body {
+   pointer-events: none;
+ }
+ 
+-/* ========== 金色辉光 ========== */
+-.gold-glow {
+-  position: relative;
++/* ========== 玻璃卡片 ========== */
++.glass-card {
++  background: rgba(15, 17, 23, 0.6);
++  backdrop-filter: blur(24px);
++  -webkit-backdrop-filter: blur(24px);
++  border: 1px solid rgba(212, 175, 55, 0.08);
++  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+ }
+ 
+-.gold-glow::after {
+-  content: '';
+-  position: absolute;
+-  inset: -1px;
+-  border-radius: inherit;
+-  background: linear-gradient(135deg, var(--gold), transparent, var(--gold));
+-  opacity: 0;
+-  transition: opacity 0.3s;
+-  z-index: -1;
+-  filter: blur(8px);
++.glass-card:hover {
++  border-color: rgba(212, 175, 55, 0.2);
++  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.06);
++  transform: translateY(-1px);
+ }
+ 
+-.gold-glow:hover::after {
+-  opacity: 0.5;
++/* ========== 金色辉光按钮 ========== */
++.gold-glow {
++  position: relative;
++  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(212, 175, 55, 0.06));
++  border: 1px solid rgba(212, 175, 55, 0.25);
++  transition: all 0.3s ease;
++}
++
++.gold-glow:hover {
++  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
++  border-color: rgba(212, 175, 55, 0.4);
++  box-shadow: 0 0 24px rgba(212, 175, 55, 0.12);
++  transform: translateY(-1px);
+ }
+ 
+ /* ========== 装饰边框 ========== */
+@@ -110,6 +119,21 @@ body {
+   right: 10%;
+ }
+ 
++/* ========== 高光焦点效果 ========== */
++.cinematic-glow {
++  position: relative;
++  overflow: hidden;
++}
++
++.cinematic-glow::after {
++  content: '';
++  position: absolute;
++  inset: 0;
++  border-radius: inherit;
++  background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.06), transparent 70%);
++  pointer-events: none;
++}
++
+ /* ========== 祖先阴影 ========== */
+ .ancestral-glow {
+   box-shadow: 0 0 30px var(--accent-glow), 0 0 60px rgba(212, 175, 55, 0.03);
+diff --git a/src/app/knowledge/[slug]/KnowledgeArticlePage.tsx b/src/app/knowledge/[slug]/KnowledgeArticlePage.tsx
+index 5de540e..08750cf 100644
+--- a/src/app/knowledge/[slug]/KnowledgeArticlePage.tsx
++++ b/src/app/knowledge/[slug]/KnowledgeArticlePage.tsx
+@@ -75,7 +75,7 @@ export default function KnowledgeArticlePage() {
+           {/* CTA + Share section */}
+           <div className="mt-12 pt-6 border-t border-[rgba(212,175,55,0.06)] space-y-6">
+             {/* CTA */}
+-            <div className="bg-[#0f1117]/50 border border-[rgba(212,175,55,0.08)] rounded-xl p-5">
++            <div className="glass-card rounded-xl p-5">
+               <p className="text-xs text-[#9b8e7a] leading-relaxed">
+                 ✨ Experience your own Bazi reading — free, no signup required, all in your browser.
+               </p>
+@@ -85,7 +85,7 @@ export default function KnowledgeArticlePage() {
+             </div>
+ 
+             {/* Share buttons */}
+-            <div className="bg-[#0f1117]/30 border border-[rgba(212,175,55,0.06)] rounded-xl p-5">
++            <div className="glass-card rounded-xl p-5">
+               <p className="text-xs text-[#6b5f4a] mb-3">📤 Share this article</p>
+               <div className="flex flex-wrap gap-2">
+                 <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`, '_blank','width=600,height=400')}
+@@ -101,14 +101,14 @@ export default function KnowledgeArticlePage() {
+             </div>
+ 
+             {/* Related articles */}
+-            <div className="bg-[#0f1117]/30 border border-[rgba(212,175,55,0.06)] rounded-xl p-5">
++            <div className="glass-card rounded-xl p-5">
+               <p className="text-xs text-[#6b5f4a] mb-3">📖 Related articles</p>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                 {RELATED_SLUGS.filter(s => s !== slug).slice(0, 3).map(s => {
+                   const a = articles[s];
+                   if (!a) return null;
+                   return (
+-                    <a key={s} href={`/knowledge/${s}`} className="bg-[#07080a]/60 rounded-lg p-3 border border-[rgba(212,175,55,0.06)] hover:border-[rgba(212,175,55,0.2)] transition-all">
++                    <a key={s} href={`/knowledge/${s}`} className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06] hover:border-[rgba(212,175,55,0.2] transition-all">
+                       <span className="text-sm mr-1">{a.icon}</span>
+                       <span className="text-xs text-[#9b8e7a]">{a.en.title}</span>
+                     </a>
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 3a7ba89..aa7d545 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -89,7 +89,7 @@ export default function Home() {
+               </div>
+ 
+               {/* 表单 */}
+-              <div className="max-w-xl mx-auto bg-[#0f1117]/90 mystical-border rounded-2xl p-8 ancestral-glow">
++              <div className="max-w-xl mx-auto glass-card cinematic-glow rounded-2xl p-8">
+                 <h2 className="text-lg font-semibold text-center mb-6 gold-text">✦ Your Birth Information</h2>
+                 <div className="space-y-6">
+                   <div className="grid grid-cols-5 gap-3">
+@@ -137,7 +137,7 @@ export default function Home() {
+                     { icon:'🔥', en:{t:'Elemental Balance',d:'See how Wood, Fire, Earth, Metal, and Water flow within you. Find which elements bring harmony and which need nurturing.'}, zh:{t:'五行平衡',d:'洞察木火土金水在你命局中的流转。发现哪些五行带来和谐，哪些需要补益。'} },
+                     { icon:'⭐', en:{t:'Life Guidance',d:'Receive personalized insights about career paths, relationships, wealth potential, and personal growth tailored to your chart.'}, zh:{t:'人生指引',d:'获取针对你命盘的个性化建议——事业方向、感情关系、财运趋势与成长路径。'} },
+                   ].map((item, i) => (
+-                    <div key={i} className="feature-card bg-[#0f1117]/80 border border-[rgba(212,175,55,0.08)] rounded-2xl p-7 text-center">
++                    <div key={i} className="glass-card rounded-2xl p-7 text-center">
+                       <div className="text-4xl mb-4">{item.icon}</div>
+                       <h3 className="text-base font-semibold gold-text mb-2">{item.en.t}</h3>
+                       <p className="text-[#9b8e7a] text-xs leading-relaxed">{item.en.d}</p>
+@@ -152,7 +152,7 @@ export default function Home() {
+                 <p className="text-[#9b8e7a] text-sm max-w-xl mx-auto mb-10">
+                   A beginner-friendly introduction to Chinese astrology and the Four Pillars of Destiny
+                 </p>
+-                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.12)] shadow-xl shadow-black/30">
++                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden glass-card">
+                   <div className="relative" style={{ paddingBottom: '56.25%' }}>
+                     <iframe
+                       src="https://www.youtube.com/embed/z_Daeo1QiII"
+@@ -173,17 +173,17 @@ export default function Home() {
+                   Deepen your understanding of Chinese astrology with our curated guides
+                 </p>
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+-                  <a href="/knowledge/what-is-bazi" className="bg-[#0f1117]/80 border border-[rgba(212,175,55,0.08)] rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25)] transition-all group">
++                  <a href="/knowledge/what-is-bazi" className="glass-card rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25] transition-all group">
+                     <span className="text-2xl block mb-3">📜</span>
+                     <h3 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">What is Bazi?</h3>
+                     <p className="text-[10px] text-[#6b5f4a]">Discover the ancient art of Four Pillars of Destiny</p>
+                   </a>
+-                  <a href="/knowledge/five-elements" className="bg-[#0f1117]/80 border border-[rgba(212,175,55,0.08)] rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25)] transition-all group">
++                  <a href="/knowledge/five-elements" className="glass-card rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25] transition-all group">
+                     <span className="text-2xl block mb-3">🌊</span>
+                     <h3 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">Five Elements</h3>
+                     <p className="text-[10px] text-[#6b5f4a]">Wood, Fire, Earth, Metal, Water — the building blocks of destiny</p>
+                   </a>
+-                  <a href="/knowledge/chinese-zodiac-complete" className="bg-[#0f1117]/80 border border-[rgba(212,175,55,0.08)] rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25)] transition-all group">
++                  <a href="/knowledge/chinese-zodiac-complete" className="glass-card rounded-xl p-5 text-left hover:border-[rgba(212,175,55,0.25] transition-all group">
+                     <span className="text-2xl block mb-3">🐉</span>
+                     <h3 className="text-sm font-semibold gold-text mb-1 group-hover:text-[#f0d68a] transition-colors">Zodiac Guide</h3>
+                     <p className="text-[10px] text-[#6b5f4a]">Complete guide to the 12 Chinese zodiac signs</p>
+@@ -196,7 +196,7 @@ export default function Home() {
+ 
+               {/* ========== Share & Stay Connected ========== */}
+               <div className="mt-24 text-center scroll-reveal">
+-                <div className="max-w-xl mx-auto bg-gradient-to-br from-[rgba(212,175,55,0.05)] to-transparent border border-[rgba(212,175,55,0.1)] rounded-2xl p-8">
++                <div className="max-w-xl mx-auto glass-card rounded-2xl p-8">
+                   <h2 className="text-xl font-bold gold-text mb-3">Share & Stay Connected</h2>
+                   <p className="text-[#9b8e7a] text-xs max-w-md mx-auto mb-6 leading-relaxed">
+                     Found your reading insightful? Share it with friends who might benefit from ancient wisdom.
+@@ -242,7 +242,7 @@ export default function Home() {
+                   { en:'Elements Mapped', zh:'五行推演', val:'64,235' },
+                   { en:'Languages', zh:'语言支持', val:'🌐 2' },
+                 ].map((stat, i) => (
+-                  <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-5 text-center">
++                  <div key={i} className="glass-card rounded-xl p-5 text-center">
+                     <div className="text-2xl font-bold gold-text mb-1">{stat.val}</div>
+                     <div className="text-xs text-[#6b5f4a]">{stat.en}</div>
+                   </div>
+@@ -261,8 +261,8 @@ export default function Home() {
+                     { q_en:'Do I need an exact birth time?', q_zh:'需要精确的出生时间吗？', a_en:'An exact birth time provides the most accurate reading, especially for the Hour Pillar which influences career and relationships. If unknown, we default to noon, though precision is recommended.', a_zh:'精确的出生时间能得到最准确的解读，尤其是影响事业与感情的时柱。如果不确定，系统会默认按午时推算，但建议尽量精确。' },
+                     { q_en:'How is my data handled?', q_zh:'我的数据安全吗？', a_en:'Your privacy is paramount. All calculations happen entirely in your browser — no data is sent to any server. We never store or share your birth information.', a_zh:'你的隐私至关重要。所有计算完全在浏览器本地完成——没有任何数据上传到服务器。我们绝不存储或分享你的出生信息。' },
+                   ].map((faq, i) => (
+-                    <details key={i} className="group bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl overflow-hidden">
+-                      <summary className="px-5 py-4 cursor-pointer text-sm font-medium text-[#e8dcc8] flex items-center gap-2 hover:bg-[rgba(212,175,55,0.03)] transition-colors list-none [&::-webkit-details-marker]:hidden">
++                    <details key={i} className="group glass-card rounded-xl overflow-hidden">
++                      <summary className="px-5 py-4 cursor-pointer text-sm font-medium text-[#e8dcc8] flex items-center gap-2 hover:bg-white/[0.02] transition-colors list-none [&::-webkit-details-marker]:hidden">
+                         <span className="text-[#d4af37] text-xs mr-1">✦</span>
+                         {faq.q_en}
+                         <span className="ml-auto text-[#6b5f4a] text-xs group-open:rotate-180 transition-transform">▾</span>
+diff --git a/src/components/Footer.tsx b/src/components/Footer.tsx
+index 97220c2..e3cba61 100644
+--- a/src/components/Footer.tsx
++++ b/src/components/Footer.tsx
+@@ -1,6 +1,6 @@
+ export default function Footer() {
+   return (
+-    <footer className="border-t border-[rgba(212,175,55,0.06)] mt-16">
++    <footer className="border-t border-[rgba(212,175,55,0.04)] mt-16 bg-black/20 backdrop-blur-xl">
+       <div className="max-w-5xl mx-auto px-4 py-10">
+         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+           <div>
+diff --git a/src/components/NavBar.tsx b/src/components/NavBar.tsx
+index 74d560c..6757073 100644
+--- a/src/components/NavBar.tsx
++++ b/src/components/NavBar.tsx
+@@ -1,25 +1,23 @@
+ 'use client';
+ 
+-interface NavBarProps {
+-  showLang?: boolean;
+-}
+-
+-export default function NavBar({ showLang = false }: NavBarProps) {
++export default function NavBar() {
+   return (
+-    <nav className="border-b border-[rgba(212,175,55,0.1)] bg-[#07080a]/60 backdrop-blur-md sticky top-0 z-50">
+-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-center gap-8">
++    <nav className="border-b border-[rgba(212,175,55,0.06)] bg-black/30 backdrop-blur-2xl sticky top-0 z-50">
++      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center">
+         <a href="/" className="shrink-0">
+-          <span className="text-lg gold-text font-bold">✦ MysticSage</span>
++          <span className="text-lg gold-text font-bold tracking-wide">✦ MysticSage</span>
+         </a>
+-        <div className="hidden md:flex items-center gap-1">
+-          <a href="/" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Bazi</a>
+-          <a href="/love" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Love Match</a>
+-          <a href="/naming" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Naming</a>
+-          <a href="/iching" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">I Ching</a>
+-          <a href="/fengshui" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Feng Shui</a>
+-          <a href="/face" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Face Reading</a>
+-          <a href="/dream" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Dream</a>
+-          <a href="/knowledge" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-[rgba(212,175,55,0.06)] transition-all">Learn</a>
++        <div className="flex-1 flex items-center justify-center">
++          <div className="hidden md:flex items-center gap-2">
++            <a href="/" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Bazi</a>
++            <a href="/love" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Love Match</a>
++            <a href="/naming" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Naming</a>
++            <a href="/iching" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">I Ching</a>
++            <a href="/fengshui" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Feng Shui</a>
++            <a href="/face" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Face Reading</a>
++            <a href="/dream" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Dream</a>
++            <a href="/knowledge" className="nav-link px-3 py-1.5 rounded-lg text-xs text-[#9b8e7a] hover:text-[#e8dcc8] hover:bg-white/5 transition-all">Learn</a>
++          </div>
+         </div>
+       </div>
+     </nav>
+diff --git a/src/components/ReadingPanel.tsx b/src/components/ReadingPanel.tsx
+index 72d2154..b867103 100644
+--- a/src/components/ReadingPanel.tsx
++++ b/src/components/ReadingPanel.tsx
+@@ -37,7 +37,7 @@ export default function ReadingPanel({ reading, result, fromCache }: ReadingPane
+           const text = content[key];
+           if (!text) return null;
+           return (
+-            <div key={key} className="bg-[#0f1117] mystical-border rounded-xl p-5">
++            <div key={key} className="glass-card rounded-xl p-5">
+               <div className="flex items-center gap-2 mb-3">
+                 <span className="text-xl">{icon}</span>
+                 <h3 className="text-lg font-semibold gold-text">{title}</h3>
+@@ -103,7 +103,7 @@ export default function ReadingPanel({ reading, result, fromCache }: ReadingPane
+         </div>
+       </div>
+ 
+-      <div className="bg-[#0f1117] border border-[rgba(212,175,55,0.06)] rounded-xl p-5">
++      <div className="glass-card rounded-xl p-5">
+         <h3 className="text-sm font-semibold gold-text mb-4 text-center">📤 Share & Export Your Reading</h3>
+         <div className="flex flex-wrap justify-center gap-3">
+           <button onClick={() => {
+-- 
+2.43.0
+

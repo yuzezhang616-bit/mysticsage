@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import NavBar from '@/components/NavBar';
-import { useLanguage } from '@/lib/use-language';
+import Footer from '@/components/Footer';
 
 // ===== 面部特征选项 =====
 const ZONES = [
@@ -89,16 +89,15 @@ const ZONES = [
 ];
 
 // ===== 解读生成 =====
-function generateReading(selections: Record<string, number>, lang: 'en' | 'zh') {
-  const isEn = lang === 'en';
+function generateReading(selections: Record<string, number>) {
 
   const sections = ZONES.map(zone => {
     const idx = selections[zone.id];
     if (idx === undefined) return null;
     return {
       icon: zone.icon,
-      title: isEn ? zone.en : zone.zh,
-      text: zone.options[idx][isEn ? 'en' : 'zh'],
+      title: zone.en,
+      text: zone.options[idx]['en'],
     };
   }).filter(Boolean);
 
@@ -151,12 +150,10 @@ function generateReading(selections: Record<string, number>, lang: 'en' | 'zh') 
     '你的面容展现出超越年龄的智慧。相信正在你面前展开的人生道路。',
   ][Math.floor(Math.random() * 3)];
 
-  return { sections, scores: normalized, summary: isEn ? summary_en : summary_zh };
+  return { sections, scores: normalized, summary: summary_en };
 }
 
 export default function FaceReadingPage() {
-  const [lang, setLang] = useLanguage();
-  const isEn = lang === 'en';
   const [photo, setPhoto] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, number>>({});
   const [reading, setReading] = useState<ReturnType<typeof generateReading> | null>(null);
@@ -183,7 +180,7 @@ export default function FaceReadingPage() {
 
     // Check if all selected
     if (Object.keys(next).length === ZONES.length) {
-      setReading(generateReading(next, lang));
+      setReading(generateReading(next));
     }
   };
 
@@ -203,11 +200,11 @@ export default function FaceReadingPage() {
         <div className="video-overlay" />
       </div>
       <main className="min-h-screen relative z-10">
-        <NavBar currentLang={lang} onLangChange={setLang} />
+        <NavBar />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold gold-text text-center mb-2">{isEn ? '👤 Face Reading Analysis' : '👤 面相分析'}</h1>
+          <h1 className="text-3xl font-bold gold-text text-center mb-2">👤 Face Reading Analysis</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-6 max-w-lg mx-auto">
-            {isEn ? 'Upload a photo and select your facial features for a personalized reading' : '上传照片，选择你的面部特征，获取专属面相分析'}
+            Upload a photo and select your facial features for a personalized reading
           </p>
 
           {/* Upload */}
@@ -217,8 +214,8 @@ export default function FaceReadingPage() {
               <button onClick={() => fileInputRef.current?.click()}
                 className="w-full border-2 border-dashed border-[rgba(212,175,55,0.2)] rounded-xl p-8 text-center hover:border-[rgba(212,175,55,0.4)] transition-all cursor-pointer bg-[#0f1117]/50">
                 <div className="text-4xl mb-3">📸</div>
-                <p className="text-[#9b8e7a] text-sm">{isEn ? 'Click to upload a photo' : '点击上传照片'}</p>
-                <p className="text-[#6b5f4a] text-xs mt-1">{isEn ? 'No data is uploaded — everything stays on your device' : '不上传任何数据到服务器，全程在本地处理'}</p>
+                <p className="text-[#9b8e7a] text-sm">Click to upload a photo</p>
+                <p className="text-[#6b5f4a] text-xs mt-1">No data is uploaded — everything stays on your device</p>
               </button>
             ) : (
               <div className="relative">
@@ -244,17 +241,17 @@ export default function FaceReadingPage() {
               </div>
 
               {/* Current zone card */}
-              <div className="bg-[#0f1117]/90 mystical-border rounded-xl p-6 animate-in fade-in">
+              <div className="glass-card rounded-xl p-6 animate-in fade-in">
                 <div className="text-center mb-4">
                   <span className="text-2xl">{ZONES[currentZone].icon}</span>
-                  <h3 className="text-base font-semibold gold-text mt-2">{isEn ? ZONES[currentZone].en : ZONES[currentZone].zh}</h3>
-                  <p className="text-[#9b8e7a] text-xs mt-1">{isEn ? `Step ${currentZone + 1} of ${ZONES.length} — choose the option that best matches your photo` : `第${currentZone + 1}步，共${ZONES.length}步——选择最符合你照片的选项`}</p>
+                  <h3 className="text-base font-semibold gold-text mt-2">{ZONES[currentZone].en}</h3>
+                  <p className="text-[#9b8e7a] text-xs mt-1">Step {currentZone + 1} of {ZONES.length} — choose the option that best matches your photo</p>
                 </div>
                 <div className="space-y-2">
                   {ZONES[currentZone].options.map((opt, i) => (
                     <button key={i} onClick={() => select(ZONES[currentZone].id, i)}
                       className="w-full text-left p-3 rounded-lg border border-[#1a1d2a] hover:border-[rgba(212,175,55,0.3)] hover:bg-[rgba(212,175,55,0.03)] transition-all text-sm">
-                      <span className="text-[#e8dcc8]">{isEn ? opt.en : opt.zh}</span>
+                      <span className="text-[#e8dcc8]">opt.en</span>
                     </button>
                   ))}
                 </div>
@@ -281,7 +278,7 @@ export default function FaceReadingPage() {
                   };
                   return (
                     <div key={key} className="bg-[#0f1117]/70 border border-[rgba(212,175,55,0.06)] rounded-xl p-3 text-center">
-                      <p className="text-[9px] text-[#6b5f4a] mb-1">{isEn ? labels[key].en : labels[key].zh}</p>
+                      <p className="text-[9px] text-[#6b5f4a] mb-1">labels[key].en</p>
                       <p className="text-lg font-bold gold-text">{val}<span className="text-[9px]">%</span></p>
                       <div className="w-full bg-[#1a1d2a] rounded-full h-1 mt-1 overflow-hidden">
                         <div className="h-full bg-[#d4af37] rounded-full" style={{width:`${val}%`}}></div>
@@ -305,7 +302,7 @@ export default function FaceReadingPage() {
               <div className="text-center pt-2">
                 <button onClick={startOver}
                   className="gold-glow bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] px-6 py-2.5 rounded-xl text-sm font-semibold cursor-pointer">
-                  {isEn ? '🔄 Start Over' : '🔄 重新分析'}
+                  🔄 Start Over
                 </button>
               </div>
             </div>
@@ -314,17 +311,17 @@ export default function FaceReadingPage() {
           {/* Knowledge section (shown before photo) */}
           {!photo && (
             <div className="border-t border-[rgba(212,175,55,0.06)] pt-8">
-              <h2 className="text-lg font-semibold gold-text text-center mb-6">{isEn ? 'The Three Sections' : '三停学说'}</h2>
+              <h2 className="text-lg font-semibold gold-text text-center mb-6">The Three Sections</h2>
               <div className="grid md:grid-cols-3 gap-4 mb-8">
                 {[
                   { en:{t:'Upper Section (Heaven)',a:'Ages 1-30',d:'The forehead represents intelligence, ancestors, and early life opportunities.'}, zh:{t:'上停（天）',a:'1-30岁',d:'额头代表智慧、祖荫和早年机遇。'} },
                   { en:{t:'Middle Section (Humanity)',a:'Ages 31-50',d:'The nose, eyes, and cheek area represent career, wealth, and social status.'}, zh:{t:'中停（人）',a:'31-50岁',d:'鼻子、眼睛和颧部代表事业、财富和社会地位。'} },
                   { en:{t:'Lower Section (Earth)',a:'Ages 51+',d:'The mouth, chin, and jaw represent later years, legacy, and final fulfillment.'}, zh:{t:'下停（地）',a:'51岁以上',d:'口、下巴和下颌代表晚年、遗产和最终的圆满。'} },
                 ].map((s,i) => (
-                  <div key={i} className="bg-[#0f1117]/60 border border-[rgba(212,175,55,0.06)] rounded-xl p-4 text-center">
-                    <h4 className="text-xs font-semibold gold-text mb-1">{isEn ? s.en.t : s.zh.t}</h4>
-                    <p className="text-[#d4af37] text-xs mb-2">{isEn ? s.en.a : s.zh.a}</p>
-                    <p className="text-[#9b8e7a] text-xs">{isEn ? s.en.d : s.zh.d}</p>
+                  <div key={i} className="bg-black/20 backdrop-blur-lg border border-white/[0.06] rounded-xl p-4 text-center">
+                    <h4 className="text-xs font-semibold gold-text mb-1">s.en.t</h4>
+                    <p className="text-[#d4af37] text-xs mb-2">s.en.a</p>
+                    <p className="text-[#9b8e7a] text-xs">s.en.d</p>
                   </div>
                 ))}
               </div>
@@ -332,11 +329,7 @@ export default function FaceReadingPage() {
           )}
         </div>
 
-        <footer className="border-t border-[rgba(212,175,55,0.06)] mt-12">
-          <div className="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p className="text-xs text-[#3a3528]">✦ MysticSage — {isEn ? 'Ancient wisdom for the modern soul' : '为现代灵魂准备的古老智慧'}</p>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

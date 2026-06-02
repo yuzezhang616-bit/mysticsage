@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
+import { Geist, Geist_Mono, Playfair_Display, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,10 +12,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const notoSerifSC = Noto_Serif_SC({
+  variable: "--font-noto-sc",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+// ⚠️ 首页专用metadata（强SEO标题）
+// 子页面请通过 layout.tsx 或 generateMetadata 自行覆盖
 export const metadata: Metadata = {
   title: "Free Bazi Reading Online — Chinese Astrology & Fortune Telling | MysticSage",
   description:
-    "Free online Bazi (Eight Characters) reading based on 5,000-year-old Chinese metaphysics. Discover your destiny, personality, and life path. Calculate your Four Pillars, check elemental balance, and get personalized insights — no signup required, all in your browser.",
+    "Free online Bazi (Eight Characters) reading based on 5,000-year-old Chinese metaphysics. Calculate your Four Pillars of Destiny, check Five Elements balance, and get personalized insights — no signup required, all in your browser.",
   keywords: [
     "free bazi reading", "bazi calculator", "Chinese astrology", "four pillars of destiny",
     "八字", "Chinese fortune telling", "bazi chart", "day master", "five elements",
@@ -28,9 +40,9 @@ export const metadata: Metadata = {
     google: "C1nGHsDw8FE3xoZ-lOXGZFpxodNcrMe834fPZAQnITs",
   },
   openGraph: {
-    title: "Free Bazi Reading — Discover Your Chinese Astrology Chart Online",
+    title: "Free Bazi Reading Online — Chinese Astrology & Fortune Telling | MysticSage",
     description:
-      "Get your free Bazi (Four Pillars) reading. Chinese astrology calculator reveals your destiny, personality, and fortune based on your birth date.",
+      "Free online Bazi (Eight Characters) reading. Calculate your Four Pillars of Destiny and check Five Elements balance.",
     type: "website",
     locale: "en_US",
     siteName: "MysticSage",
@@ -39,8 +51,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Bazi Reading Online — MysticSage",
-    description: "Discover your destiny with free Chinese astrology. Calculate your Bazi chart, check elemental balance, and get personalized insights.",
+    title: "Free Bazi Reading Online — Chinese Astrology | MysticSage",
+    description: "Free online Bazi reading. Calculate your Four Pillars and get personalized insights.",
   },
   robots: {
     index: true,
@@ -56,14 +68,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${notoSerifSC.variable} h-full antialiased`}
     >
-      <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-04B8Z44JPM" />
-      <Script id="gtag-init" strategy="afterInteractive" dangerouslySetInnerHTML={{
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-04B8Z44JPM"></script>
+      <script dangerouslySetInnerHTML={{
         __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-04B8Z44JPM');`
       }} />
-      <Script id="ld-json" type="application/ld+json" dangerouslySetInnerHTML={{
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
