@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * 前端展示文案，非真实用户数据
@@ -26,10 +26,12 @@ const TESTIMONIALS = [
 ];
 
 export default function Testimonials() {
-  // 每次随机选择3条展示，用 useMemo 保证只在客户端渲染时 shuffle 一次
-  const displayed = useMemo(() => {
+  const [displayed, setDisplayed] = useState(TESTIMONIALS.slice(0, 3));
+
+  useEffect(() => {
+    // 避免 SSR hydration 不一致：只在客户端随机打乱
     const shuffled = [...TESTIMONIALS].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3);
+    setDisplayed(shuffled.slice(0, 3));
   }, []);
 
   return (

@@ -1,72 +1,126 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 
-export default function LoveMatchPage() {
-  const [p1, setP1] = useState({ year:'', month:'', day:'', hour:'', gender:'male' as 'male'|'female' });
-  const [p2, setP2] = useState({ year:'', month:'', day:'', hour:'', gender:'female' as 'male'|'female' });
-  const [result, setResult] = useState<{ score: number; analysis: string; tips: string } | null>(null);
+const ELEMENTS_DISPLAY: Record<string, { emoji: string; color: string }> = {
+  Wood: { emoji: '🌲', color: '#22c55e' },
+  Fire: { emoji: '🔥', color: '#ef4444' },
+  Earth: { emoji: '⛰️', color: '#d97706' },
+  Metal: { emoji: '⚔️', color: '#a3a3a3' },
+  Water: { emoji: '🌊', color: '#3b82f6' },
+};
 
-  const handleSubmit = () => {
+const STEM_ELEMENT = ['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water']; // 甲乙丙丁戊己庚辛壬癸
+const STEM_NAMES_EN = ['Jia (Wood)', 'Yi (Wood)', 'Bing (Fire)', 'Ding (Fire)', 'Wu (Earth)', 'Ji (Earth)', 'Geng (Metal)', 'Xin (Metal)', 'Ren (Water)', 'Gui (Water)'];
+const BRANCH_ZODIAC = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+const BRANCH_ELEMENT = ['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'];
+
+function getYearStemIndex(year: number) { return (year - 4) % 10; }
+function getYearBranchIndex(year: number) { return (year - 4) % 12; }
+
+const COMPAT_MATRIX: Record<string, Record<string, { score: number; note: string; }>> = {
+  Wood: {
+    Wood: { score: 70, note: 'Two Wood — strong creative synergy but can compete for the same resources.' },
+    Fire: { score: 85, note: 'Wood feeds Fire — natural nurturing dynamic. Passion and creativity flow.' },
+    Earth: { score: 50, note: 'Wood drains Earth — creative tension that can be productive with awareness.' },
+    Metal: { score: 30, note: 'Metal chops Wood — fundamental friction that requires patience to navigate.' },
+    Water: { score: 80, note: 'Water nourishes Wood — deep emotional understanding and growth.' },
+  },
+  Fire: {
+    Wood: { score: 80, note: 'Wood fuels Fire — supportive and energizing. Ideas spark action.' },
+    Fire: { score: 65, note: 'Two Fire — brilliant but intense. Shared passion with risk of burnout.' },
+    Earth: { score: 75, note: 'Fire creates Earth — warm and grounding. Practical yet inspired.' },
+    Metal: { score: 35, note: 'Fire melts Metal — transformative but challenging. Growth through friction.' },
+    Water: { score: 25, note: 'Water extinguishes Fire — opposing forces need strong boundaries.' },
+  },
+  Earth: {
+    Wood: { score: 45, note: 'Wood drains Earth — different paces that need conscious adaptation.' },
+    Fire: { score: 70, note: 'Fire creates Earth — warm, stable, and mutually nurturing.' },
+    Earth: { score: 60, note: 'Two Earth — solid foundation but can get stuck in routine.' },
+    Metal: { score: 80, note: 'Earth produces Metal — loyal, dependable, building something lasting.' },
+    Water: { score: 55, note: 'Earth dams Water — grounding influence with some tension.' },
+  },
+  Metal: {
+    Wood: { score: 30, note: 'Metal chops Wood — direct and challenging. Needs soft skills.' },
+    Fire: { score: 40, note: 'Fire melts Metal — transformative with potential for brilliance.' },
+    Earth: { score: 85, note: 'Earth produces Metal — deeply supportive. Solid as a rock.' },
+    Metal: { score: 65, note: 'Two Metal — strong and resilient but can be rigid.' },
+    Water: { score: 70, note: 'Metal generates Water — thoughtful and deep. Intellectual bond.' },
+  },
+  Water: {
+    Wood: { score: 75, note: 'Water nourishes Wood — intuitive and growth-oriented partnership.' },
+    Fire: { score: 20, note: 'Water extinguishes Fire — fundamental polarity requiring respect.' },
+    Earth: { score: 50, note: 'Earth dams Water — stabilizing yet sometimes limiting.' },
+    Metal: { score: 70, note: 'Metal generates Water — deep, reflective, emotionally rich.' },
+    Water: { score: 55, note: 'Two Water — deep emotional connection but risk of stagnation.' },
+  },
+};
+
+interface Person {
+  year: string; month: string; day: string; hour: string; gender: 'male' | 'female';
+}
+
+export default function LoveMatchPage() {
+  const [p1, setP1] = useState<Person>({ year:'', month:'', day:'', hour:'', gender:'male' });
+  const [p2, setP2] = useState<Person>({ year:'', month:'', day:'', hour:'', gender:'female' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const result = useMemo(() => {
+    if (!submitted) return null;
     const y1 = parseInt(p1.year), y2 = parseInt(p2.year);
     const m1 = parseInt(p1.month), m2 = parseInt(p2.month);
-    if (!y1 || !y2 || !m1 || !m2) return;
+    if (!y1 || !y2 || !m1 || !m2) return null;
 
-    // Simple element compatibility (based on birth year Heavenly Stem)
-    const stemMap = [4,5,0,1,2,3,4,5,6,7]; // 甲-癸 -> element index
-    const s1 = stemMap[(y1 - 4) % 10];
-    const s2 = stemMap[(y2 - 4) % 10];
-    const elements = ['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water'];
-    const el1 = elements[s1], el2 = elements[s2];
+    const s1 = getYearStemIndex(y1);
+    const s2 = getYearStemIndex(y2);
+    const b1 = getYearBranchIndex(y1);
+    const b2 = getYearBranchIndex(y2);
 
-    const compatibility: Record<string, Record<string, { score: number }>> = {
-      Wood: { Wood:{score:70}, Fire:{score:85}, Earth:{score:45}, Metal:{score:25}, Water:{score:80} },
-      Fire: { Wood:{score:80}, Fire:{score:65}, Earth:{score:75}, Metal:{score:30}, Water:{score:20} },
-      Earth: { Wood:{score:30}, Fire:{score:70}, Earth:{score:60}, Metal:{score:75}, Water:{score:55} },
-      Metal: { Wood:{score:20}, Fire:{score:35}, Earth:{score:80}, Metal:{score:65}, Water:{score:70} },
-      Water: { Wood:{score:75}, Fire:{score:25}, Earth:{score:50}, Metal:{score:70}, Water:{score:55} },
-    };
-    const score = compatibility[el1]?.[el2]?.score || 50;
+    const el1 = STEM_ELEMENT[s1];
+    const el2 = STEM_ELEMENT[s2];
 
-    const analyses: Record<string, { en: string; zh: string }> = {
-      high: {
-        en: 'Excellent compatibility! Your elements naturally support each other. This relationship has strong foundations for growth, mutual understanding, and lasting harmony. The cosmic energies favor your union.',
-        zh: '非常合拍！你们的五行天然相生。这段关系有坚实的基础来支持成长、相互理解和持久的和谐。宇宙能量眷顾着你们的结合。'
-      },
-      medium: {
-        en: 'Moderate compatibility with good potential. Your elements have both harmony and tension — the key is communication and mutual respect. Where one is strong, the other complements. With effort, this can be a balanced and fulfilling relationship.',
-        zh: '中等契合度，有不错的潜力。你们的五行既有和谐也有张力——关键在于沟通和相互尊重。一方强处，另一方互补。用心经营，这可以是一段平衡而充实的关系。'
-      },
-      low: {
-        en: 'This pairing faces some elemental challenges. Differences in temperament may require extra patience and understanding. However, challenges can strengthen a relationship — the key is recognizing and respecting each other\'s fundamental nature.',
-        zh: '这对组合面临一些五行上的挑战。性格差异可能需要额外的耐心和理解。然而，挑战也可以巩固关系——关键在于认识和尊重彼此的本性。'
-      }
-    };
+    const match = COMPAT_MATRIX[el1]?.[el2] || { score: 50, note: 'Neutral compatibility with room to grow.' };
 
-    const tips: Record<string, { en: string; zh: string }> = {
-      high: {
-        en: 'Nurture your natural harmony through shared activities that balance both your elements. Travel together, create together, grow together.',
-        zh: '通过平衡你二人五行的共同活动来滋养你们天然的和谐。一起旅行、一起创造、一起成长。'
-      },
-      medium: {
-        en: 'Focus on open communication. Your differences are not obstacles — they are opportunities to learn and expand. Celebrate what makes each of you unique.',
-        zh: '注重开放的沟通。你们的不同不是障碍——它们是学习和扩展的机会。珍视彼此的独特之处。'
-      },
-      low: {
-        en: 'Patience is your greatest ally. Find common ground in shared values and interests. Complementary strengths can create a whole greater than the sum of its parts.',
-        zh: '耐心是你们最好的盟友。在共同价值观和兴趣中找到共同点。互补的优势可以创造大于部分之和的整体。'
-      }
+    // Element info
+    const e1 = ELEMENTS_DISPLAY[el1];
+    const e2 = ELEMENTS_DISPLAY[el2];
+
+    const z1 = BRANCH_ZODIAC[b1];
+    const z2 = BRANCH_ZODIAC[b2];
+
+    // Communication score based on element relationship
+    const generateNotes = (s: number): { comm: string; values: string; growth: string } => {
+      if (s >= 70) return {
+        comm: 'Communication flows naturally. You intuitively understand each other\'s perspectives and can resolve disagreements with ease.',
+        values: 'You share core values and life priorities. Your approaches to money, family, and goals align harmoniously.',
+        growth: 'This relationship naturally encourages personal growth. You inspire each other to become the best versions of yourselves.',
+      };
+      if (s >= 45) return {
+        comm: 'Communication requires conscious effort. Your different styles can complement each other when you listen actively and speak with patience.',
+        values: 'Your values overlap but differ in important ways. These differences can create balance if respected rather than resisted.',
+        growth: 'Growth comes from navigating your differences. Each challenge is an opportunity to expand your understanding.',
+      };
+      return {
+        comm: 'Communication takes work. Your natural styles differ significantly — establish clear communication practices early.',
+        values: 'Your core values may diverge on key issues. Open, non-judgmental discussion about priorities is essential.',
+        growth: 'Growth requires conscious effort. The rewards of bridging your differences can be profound and lasting.',
+      };
     };
 
-    const level = score >= 70 ? 'high' : score >= 45 ? 'medium' : 'low';
-    setResult({
-      score,
-      analysis: analyses[level].en,
-      tips: tips[level].en,
-    });
-  };
+    const notes = generateNotes(match.score);
+
+    return {
+      score: match.score,
+      el1, el2,
+      e1, e2,
+      s1: STEM_NAMES_EN[s1], s2: STEM_NAMES_EN[s2],
+      z1, z2,
+      note: match.note,
+      ...notes,
+    };
+  }, [submitted, p1, p2]);
 
   return (
     <>
@@ -79,76 +133,97 @@ export default function LoveMatchPage() {
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold gold-text text-center mb-2">💕 Love Match Analysis</h1>
           <p className="text-[#9b8e7a] text-center text-sm mb-8 max-w-lg mx-auto">
-            Compare two birth charts to discover your elemental compatibility
+            Compare two birth charts to discover your elemental compatibility and relationship dynamics
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Person 1 */}
-            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
-              <h3 className="text-sm font-semibold gold-text mb-4 text-center">👤 First Person</h3>
-              <div className="grid grid-cols-4 gap-2 mb-3">
-                <div><label className="text-xs text-[#9b8e7a]">Year</label><input type="number" placeholder="1990" value={p1.year} onChange={e=>setP1({...p1,year:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Month</label><input type="number" placeholder="6" value={p1.month} onChange={e=>setP1({...p1,month:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Day</label><input type="number" placeholder="15" value={p1.day} onChange={e=>setP1({...p1,day:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Hour</label><input type="number" placeholder="12" value={p1.hour} onChange={e=>setP1({...p1,hour:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
+            {[
+              { label: '👤 First Person', data: p1, set: setP1 },
+              { label: '👤 Second Person', data: p2, set: setP2 },
+            ].map((person, idx) => (
+              <div key={idx} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
+                <h3 className="text-sm font-semibold gold-text mb-4 text-center">{person.label}</h3>
+                <div className="grid grid-cols-4 gap-2 mb-3">
+                  {(['year','month','day','hour'] as const).map(f => (
+                    <div key={f}>
+                      <label className="text-xs text-[#9b8e7a]">{f.charAt(0).toUpperCase()+f.slice(1)}</label>
+                      <input type="number" placeholder={f==='year'?'1990':f==='hour'?'12':'6'}
+                        value={person.data[f]}
+                        onChange={e => person.set({...person.data, [f]: e.target.value})}
+                        className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40 outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {(['male','female'] as const).map(g => (
+                    <button key={g} onClick={() => person.set({...person.data, gender: g})}
+                      className={`flex-1 py-2 rounded-lg border text-xs font-medium transition-all ${
+                        person.data.gender === g
+                          ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#f0d68a]'
+                          : 'border-[#1a1d2a] text-[#6b5f4a]'
+                      }`}>
+                      {g === 'male' ? '♂ Male' : '♀ Female'}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {(['male','female'] as const).map(g => (
-                  <button key={g} onClick={()=>setP1({...p1,gender:g})}
-                    className={`flex-1 py-2 rounded-lg border text-xs font-medium transition-all ${p1.gender===g?'border-[#d4af37] bg-[#d4af37]/10 text-[#f0d68a]':'border-[#1a1d2a] text-[#6b5f4a]'}`}>
-                    {g==='male'?'♂ Male':'♀ Female'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Person 2 */}
-            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
-              <h3 className="text-sm font-semibold gold-text mb-4 text-center">👤 Second Person</h3>
-              <div className="grid grid-cols-4 gap-2 mb-3">
-                <div><label className="text-xs text-[#9b8e7a]">Year</label><input type="number" placeholder="1992" value={p2.year} onChange={e=>setP2({...p2,year:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Month</label><input type="number" placeholder="8" value={p2.month} onChange={e=>setP2({...p2,month:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Day</label><input type="number" placeholder="20" value={p2.day} onChange={e=>setP2({...p2,day:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-                <div><label className="text-xs text-[#9b8e7a]">Hour</label><input type="number" placeholder="14" value={p2.hour} onChange={e=>setP2({...p2,hour:e.target.value})} className="w-full bg-[#0f1117] border border-[#1a1d2a] rounded-lg px-2 py-2 text-[#e8dcc8] text-xs focus:border-[#d4af37]/40"/></div>
-              </div>
-              <div className="flex gap-2">
-                {(['male','female'] as const).map(g => (
-                  <button key={g} onClick={()=>setP2({...p2,gender:g})}
-                    className={`flex-1 py-2 rounded-lg border text-xs font-medium transition-all ${p2.gender===g?'border-[#d4af37] bg-[#d4af37]/10 text-[#f0d68a]':'border-[#1a1d2a] text-[#6b5f4a]'}`}>
-                    {g==='male'?'♂ Male':'♀ Female'}
-                  </button>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="text-center mb-8">
-            <button onClick={handleSubmit} className="gold-glow bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] px-8 py-3 rounded-xl font-semibold cursor-pointer">
-              💞 Check Compatibility  
+            <button onClick={() => setSubmitted(true)}
+              className="gold-glow bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] px-8 py-3 rounded-xl font-semibold cursor-pointer hover:brightness-110 transition-all">
+              💞 Check Compatibility
             </button>
           </div>
 
           {result && (
             <div className="space-y-4 animate-in fade-in duration-500">
+              {/* Elemental Display */}
+              <div className="flex items-center justify-center gap-6 mb-4">
+                <div className="text-center">
+                  <div className="text-3xl mb-1">{result.e1.emoji}</div>
+                  <div className="text-[10px] text-[#9b8e7a]">{result.s1}</div>
+                  <div className="text-xs text-[#e8dcc8]" style={{color: result.e1.color}}>{result.el1}</div>
+                  <div className="text-[10px] text-[#6b5f4a]">{result.z1} 🐭</div>
+                </div>
+                <div className="text-2xl gold-text">❤️</div>
+                <div className="text-center">
+                  <div className="text-3xl mb-1">{result.e2.emoji}</div>
+                  <div className="text-[10px] text-[#9b8e7a]">{result.s2}</div>
+                  <div className="text-xs text-[#e8dcc8]" style={{color: result.e2.color}}>{result.el2}</div>
+                  <div className="text-[10px] text-[#6b5f4a]">{result.z2}</div>
+                </div>
+              </div>
+
               {/* Score */}
               <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-6 text-center">
                 <p className="text-xs text-[#9b8e7a] mb-2">Compatibility Score</p>
-                <div className="text-5xl font-bold gold-text mb-2">{result.score}<span className="text-xl">%</span></div>
-                <div className="w-full bg-[#1a1d2a] rounded-full h-2 overflow-hidden max-w-xs mx-auto">
+                <div className="text-5xl font-bold gold-text mb-2">
+                  {result.score}<span className="text-xl">%</span>
+                </div>
+                <div className="w-full bg-[#1a1d2a] rounded-full h-2 overflow-hidden max-w-xs mx-auto mb-2">
                   <div className={`h-full rounded-full transition-all duration-1000 ${
                     result.score >= 70 ? 'bg-green-500' : result.score >= 45 ? 'bg-yellow-500' : 'bg-red-500'
                   }`} style={{width:`${result.score}%`}}></div>
                 </div>
+                <p className="text-[10px] text-[#6b5f4a]">{result.note}</p>
               </div>
-              {/* Analysis */}
-              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-5">
-                <h3 className="text-sm font-semibold gold-text mb-3">📊 Analysis</h3>
-                <p className="text-[#e8dcc8] text-sm leading-relaxed opacity-85">{result.analysis}</p>
-              </div>
-              {/* Tips */}
-              <div className="bg-gradient-to-r from-[rgba(212,175,55,0.08)] to-[rgba(168,135,46,0.05)] border border-[rgba(212,175,55,0.15)] rounded-xl p-5">
-                <h3 className="text-sm font-semibold gold-text mb-3">💡 Advice</h3>
-                <p className="text-[#f0d68a] text-sm leading-relaxed">{result.tips}</p>
+
+              {/* 3-dimension analysis */}
+              <div className="grid md:grid-cols-3 gap-3">
+                {[
+                  {title:'💬 Communication', text: result.comm},
+                  {title:'💎 Values', text: result.values},
+                  {title:'🌱 Growth', text: result.growth},
+                ].map((item, i) => (
+                  <div key={i}
+                    className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-xl shadow-lg shadow-black/30 p-4">
+                    <h4 className="text-xs font-semibold gold-text mb-2">{item.title}</h4>
+                    <p className="text-[#c4b998] text-xs leading-relaxed">{item.text}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -158,20 +233,19 @@ export default function LoveMatchPage() {
             <h2 className="text-lg font-semibold gold-text text-center mb-6">About Bazi Compatibility</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { en:{t:'The Five Elements',d:'In Chinese metaphysics, everything is composed of five elements: Wood, Fire, Earth, Metal, and Water. Elemental compatibility is the foundation of any relationship analysis.'}, zh:{t:'五行相生相克',d:'在中华命理中，万物由五种元素构成：木、火、土、金、水。五行契合度是所有关系分析的基础。'} },
-                { en:{t:'Yin & Yang Balance',d:'Male and female energies within each person create a unique dynamic. The ideal partnership balances these energies between the two individuals.'}, zh:{t:'阴阳调和',d:'每个人体内的阴阳能量形成独特的动态。理想的关系是两人之间阴阳能量的平衡协调。'} },
-                { en:{t:'Heavenly Stems',d:'Each birth year is assigned a Heavenly Stem that reveals one\'s elemental nature. Compatibility is calculated by how these elements interact.'}, zh:{t:'天干五行',d:'每个出生年份对应一个天干，揭示其五行属性。契合度由这些五行如何相互作用来计算。'} },
-                { en:{t:'Beyond Compatibility',d:'While elemental compatibility is important, true harmony depends on mutual respect, communication, and shared values. Use this as a guide, not a verdict.'}, zh:{t:'超越契合度',d:'五行契合度固然重要，但真正的和谐取决于相互尊重、沟通和共同的价值观。将此作为参考，而非定论。'} },
+                {t:'The Five Elements',d:'In Chinese metaphysics, everything is composed of five elements: Wood, Fire, Earth, Metal, and Water. Elemental compatibility is the foundation of any relationship analysis.'},
+                {t:'Yin & Yang Balance',d:'Male and female energies within each person create a unique dynamic. The ideal partnership balances these energies between the two individuals.'},
+                {t:'Heavenly Stems',d:'Each birth year is assigned a Heavenly Stem that reveals one\'s elemental nature. Compatibility is calculated by how these elements interact.'},
+                {t:'Beyond Compatibility',d:'While elemental compatibility is important, true harmony depends on mutual respect, communication, and shared values. Use this as a guide, not a verdict.'},
               ].map((item,i) => (
                 <div key={i} className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl p-4">
-                  <h4 className="text-xs font-semibold gold-text mb-2">{item.en.t}</h4>
-                  <p className="text-[#9b8e7a] text-xs leading-relaxed">{item.en.d}</p>
+                  <h4 className="text-xs font-semibold gold-text mb-2">{item.t}</h4>
+                  <p className="text-[#9b8e7a] text-xs leading-relaxed">{item.d}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
         <Footer />
       </main>
     </>

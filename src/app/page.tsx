@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Script from 'next/script';
 import type { BaziResult, Gender } from '@/lib/bazi/types';
 import type { AiReading } from '@/lib/ai/interpretation';
 import { calculateBazi } from '@/lib/bazi';
@@ -122,6 +123,19 @@ export default function Home() {
 
   return (
     <>
+      {/* JSON-LD FAQ Schema */}
+      <Script id="home-faq-schema" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          'mainEntity': [
+            {'@type':'Question','name':'What is Bazi reading?','acceptedAnswer':{'@type':'Answer','text':'Bazi (Eight Characters) is an ancient Chinese astrology system that maps your birth year, month, day, and hour into Heavenly Stems and Earthly Branches. It reveals your personality, strengths, challenges, and life path.'}},
+            {'@type':'Question','name':'Is MysticSage free?','acceptedAnswer':{'@type':'Answer','text':'Yes, MysticSage is completely free. No signup or account required. All calculations run in your browser — no data is uploaded to any server.'}},
+            {'@type':'Question','name':'How accurate is online Bazi calculation?','acceptedAnswer':{'@type':'Answer','text':'Our Bazi engine follows traditional Chinese metaphysics using the exact same algorithmic rules as professional Bazi practitioners. The accuracy depends on correct birth time input.'}},
+            {'@type':'Question','name':'How is Bazi different from Western zodiac?','acceptedAnswer':{'@type':'Answer','text':'Bazi is based on a 60-year cycle of Heavenly Stems and Earthly Branches rather than planetary positions. It focuses on elemental balance (Wood, Fire, Earth, Metal, Water) rather than zodiac constellations.'}},
+          ]
+        })}
+      </Script>
       <div className="video-bg">
         <video autoPlay muted loop playsInline className="bg-video">
           <source src="/bg.mp4" type="video/mp4" />

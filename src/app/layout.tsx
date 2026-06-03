@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display, Noto_Serif_SC } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -79,12 +80,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${notoSerifSC.variable} h-full antialiased`}
     >
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-04B8Z44JPM"></script>
-      <script dangerouslySetInnerHTML={{
-        __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-04B8Z44JPM');`
-      }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-04B8Z44JPM" strategy="afterInteractive" />
+      <Script id="google-analytics" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-04B8Z44JPM');`
+        }} />
+      <Script id="website-schema" type="application/ld+json" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
           "name": "MysticSage",
@@ -99,8 +101,7 @@ export default function RootLayout({
             "@type": "Audience",
             "audienceType": ["People interested in Chinese culture", "Spirituality seekers", "Astrology enthusiasts"]
           }
-        })
-      }} />
+        }) }} />
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
