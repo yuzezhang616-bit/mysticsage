@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a8872e"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#a8872e"/>
+    </linearGradient>
+    <linearGradient id="goldVertical" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#d4af37" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="lineFade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#d4af37" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#07080a"/>
+
+  <!-- Subtle radial glow -->
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Decorative golden lines -->
+  <line x1="300" y1="180" x2="900" y2="180" stroke="url(#lineFade)" stroke-width="0.5"/>
+  <line x1="400" y1="185" x2="800" y2="185" stroke="url(#lineFade)" stroke-width="0.3"/>
+
+  <line x1="300" y1="450" x2="900" y2="450" stroke="url(#lineFade)" stroke-width="0.5"/>
+  <line x1="400" y1="445" x2="800" y2="445" stroke="url(#lineFade)" stroke-width="0.3"/>
+
+  <!-- Subtle vertical decorative line center -->
+  <rect x="598" y="140" width="4" height="350" rx="2" fill="url(#goldVertical)"/>
+
+  <!-- Gold decorative diamond -->
+  <rect x="591" y="310" width="18" height="18" rx="3" fill="none" stroke="#d4af37" stroke-width="0.8" transform="rotate(45 600 319)" opacity="0.6"/>
+
+  <!-- Gold star symbol -->
+  <text x="600" y="275" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#d4af37" opacity="0.5">✦</text>
+
+  <!-- Main title -->
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="bold" fill="url(#gold)" letter-spacing="3">
+    ✦ MysticSage
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="395" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#9b8e7a" letter-spacing="2">
+    Free Bazi Reading &amp; Chinese Astrology
+  </text>
+
+  <!-- Bottom decorative lines -->
+  <line x1="450" y1="430" x2="750" y2="430" stroke="url(#lineFade)" stroke-width="0.4"/>
+
+  <!-- Small decorative dots -->
+  <circle cx="400" cy="182" r="1.5" fill="#d4af37" opacity="0.3"/>
+  <circle cx="800" cy="182" r="1.5" fill="#d4af37" opacity="0.3"/>
+  <circle cx="450" cy="448" r="1.5" fill="#d4af37" opacity="0.3"/>
+  <circle cx="750" cy="448" r="1.5" fill="#d4af37" opacity="0.3"/>
+</svg>

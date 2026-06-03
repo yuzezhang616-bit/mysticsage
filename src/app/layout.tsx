@@ -48,11 +48,20 @@ export const metadata: Metadata = {
     siteName: "MysticSage",
     url: "https://mystic8zi.top",
     countryName: "United States",
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'MysticSage - Free Bazi Reading Online',
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Free Bazi Reading Online — Chinese Astrology | MysticSage",
     description: "Free online Bazi reading. Calculate your Four Pillars and get personalized insights.",
+    images: ['/og-image.svg'],
   },
   robots: {
     index: true,

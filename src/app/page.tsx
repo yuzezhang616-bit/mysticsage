@@ -9,6 +9,9 @@ import BaziChart from '@/components/BaziChart';
 import ReadingPanel from '@/components/ReadingPanel';
 import Footer from "@/components/Footer";
 import NavBar from '@/components/NavBar';
+import Testimonials from '@/components/Testimonials';
+import LiveActivityFeed from '@/components/LiveActivityFeed';
+import DailyHint from '@/components/DailyHint';
 
 const ZODIAC_SIGNS = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
 const TODAY_ZODIAC = ZODIAC_SIGNS[new Date().getDay() % 12];
@@ -49,8 +52,10 @@ export default function Home() {
   const [reading, setReading] = useState<AiReading | null>(null);
   const [error, setError] = useState('');
 
+  const [highlightedFields, setHighlightedFields] = useState<string[]>([]);
+
   const [formData, setFormData] = useState({
-    year: '', month: '', day: '', hour: '', minute: '', gender: 'male' as 'male' | 'female',
+    year: '', month: '', day: '', hour: '12', minute: '00', gender: 'male' as 'male' | 'female',
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -61,11 +66,37 @@ export default function Home() {
     parseInt(formData.day) >= 1 && parseInt(formData.day) <= 31;
 
   const handleSubmit = async () => {
-    setSubmitted(true);
-    setLoading(true);
     setError('');
     setResult(null);
     setReading(null);
+    setHighlightedFields([]);
+
+    // Validate required fields before proceeding
+    const emptyFields = (['year', 'month', 'day'] as const).filter(
+      f => !formData[f]
+    );
+    if (
+      !formData.year || !formData.month || !formData.day ||
+      parseInt(formData.year) < 1900 || parseInt(formData.year) > 2100 ||
+      parseInt(formData.month) < 1 || parseInt(formData.month) > 12 ||
+      parseInt(formData.day) < 1 || parseInt(formData.day) > 31
+    ) {
+      setError('Please fill in all fields');
+      // Determine which fields to highlight
+      const fieldsToHighlight = emptyFields.length > 0
+        ? emptyFields
+        : ['year', 'month', 'day'];
+      setHighlightedFields(fieldsToHighlight);
+      setTimeout(() => setHighlightedFields([]), 1500);
+      // Scroll to first problematic field
+      const firstField = fieldsToHighlight[0];
+      const el = document.querySelector(`[data-field="${firstField}"]`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    setSubmitted(true);
+    setLoading(true);
 
     try {
       const bazi = calculateBazi({
@@ -104,6 +135,7 @@ export default function Home() {
 
           {!submitted && (
             <>
+              <DailyHint />
               {/* Hero */}
               <div className="text-center mb-12">
                 <div className="text-6xl mb-6 select-none opacity-60">☰</div>
@@ -128,13 +160,89 @@ export default function Home() {
                   <div className="grid grid-cols-5 gap-3">
                     {(['year','month','day','hour','minute'] as const).map((field) => {
                       const labels: Record<string,string> = { year:'Year', month:'Month', day:'Day', hour:'Hour', minute:'Min' };
-                      const ph: Record<string,string> = { year:'1990', month:'1', day:'15', hour:'14', minute:'30' };
+                      const ph: Record<string,string> = { year:'1990', month:'1', day:'15', hour:'', minute:'' };
+                      const isHighlighted = highlightedFields.includes(field);
+                      const borderClass = isHighlighted
+                        ? 'border-red-400/60 ring-1 ring-red-400/30'
+                        : 'border-white/10';
+                      const baseInput = `w-full bg-white/5 border rounded-lg px-3 py-3 text-[#e8dcc8] placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40 focus:ring-1 focus:ring-[#d4af37]/20 transition-all text-sm ${borderClass}`;
+                      // Hour → dropdown 0-23, Minute → dropdown 00/15/30/45
+                      if (field === 'hour') {
+                        return (
+                          <div key={field} data-field={field}>
+                            <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                            <select value={formData.hour}
+                              onChange={(e) => setFormData({...formData, hour: e.target.value})}
+                              className={`${baseInput} appearance-none cursor-pointer`}>
+                              {Array.from({length: 24}, (_, i) => (
+                                <option key={i} value={String(i)} className="bg-[#15181d] text-[#e8dcc8]">{i}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      }
+                      if (field === 'minute') {
+                        return (
+                          <div key={field} data-field={field}>
+                            <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                            <select value={formData.minute}
+                              onChange={(e) => setFormData({...formData, minute: e.target.value})}
+                              className={`${baseInput} appearance-none cursor-pointer`}>
+                              {['00', '15', '30', '45'].map(m => (
+                                <option key={m} value={m} className="bg-[#15181d] text-[#e8dcc8]">{m}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      }
+                      if (field === 'year') {
+                        return (
+                          <div key={field} data-field={field}>
+                            <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                            <select value={formData.year}
+                              onChange={(e) => setFormData({...formData, year: e.target.value})}
+                              className={`${baseInput} appearance-none cursor-pointer`}>
+                              {Array.from({length: 126}, (_, i) => 1900 + i).map(y => (
+                                <option key={y} value={String(y)} className="bg-[#15181d] text-[#e8dcc8]">{y}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      }
+                      if (field === 'month') {
+                        return (
+                          <div key={field} data-field={field}>
+                            <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                            <select value={formData.month}
+                              onChange={(e) => setFormData({...formData, month: e.target.value})}
+                              className={`${baseInput} appearance-none cursor-pointer`}>
+                              {Array.from({length: 12}, (_, i) => i + 1).map(m => (
+                                <option key={m} value={String(m)} className="bg-[#15181d] text-[#e8dcc8]">{m}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      }
+                      if (field === 'day') {
+                        return (
+                          <div key={field} data-field={field}>
+                            <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
+                            <select value={formData.day}
+                              onChange={(e) => setFormData({...formData, day: e.target.value})}
+                              className={`${baseInput} appearance-none cursor-pointer`}>
+                              {Array.from({length: 31}, (_, i) => i + 1).map(d => (
+                                <option key={d} value={String(d)} className="bg-[#15181d] text-[#e8dcc8]">{d}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      }
                       return (
-                        <div key={field}>
+                        <div key={field} data-field={field}>
                           <label className="block text-xs text-[#9b8e7a] mb-1.5">{labels[field]}</label>
                           <input type="number" placeholder={ph[field]} value={formData[field]}
-                            onChange={(e) => setFormData({...formData, [field]: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-3 text-[#e8dcc8] placeholder-[#3a3528] focus:outline-none focus:border-[#d4af37]/40 focus:ring-1 focus:ring-[#d4af37]/20 transition-all text-sm"/>
+                            onChange={(e) => setFormData({...formData, [field]: e.target.value})}
+                            className={baseInput}/>
                         </div>
                       );
                     })}
@@ -150,10 +258,8 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
-                  <button onClick={handleSubmit} disabled={!isValid || loading}
-                    className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${isValid && !loading
-                      ? 'bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] cursor-pointer hover:shadow-[0_0_32px_rgba(212,175,55,0.25)] hover:brightness-110 hover:-translate-y-0.5'
-                      : 'bg-white/5 text-[#3a3528] cursor-not-allowed border border-white/5'}`}>
+                  <button onClick={handleSubmit}
+                    className="w-full py-4 rounded-xl font-semibold text-lg transition-all bg-gradient-to-r from-[#a8872e] via-[#d4af37] to-[#a8872e] text-[#07080a] cursor-pointer hover:shadow-[0_0_32px_rgba(212,175,55,0.25)] hover:brightness-110 hover:-translate-y-0.5">
                     {loading
                       ? <span className="inline-flex items-center gap-2"><span className="gold-spinner"></span>Reading the stars...</span>
                       : <span>✦ Reveal My Destiny</span>}
@@ -183,6 +289,9 @@ export default function Home() {
                   <p className="text-[10px] text-[#3a3528] mt-4">Not your sign? Calculate your personalized Bazi reading above ✦</p>
                 </div>
               </div>
+
+              {/* Testimonials — 匿名用户评价区块，前端展示文案，非真实用户数据 */}
+              <Testimonials />
 
               {/* Features */}
               <div className="mt-24 text-center">
@@ -286,6 +395,12 @@ export default function Home() {
                     { q:'Is this fortune telling?', a:'Bazi is better understood as a tool for self-discovery rather than fortune telling. It highlights your inherent tendencies and potential life patterns, empowering you to make informed decisions.' },
                     { q:'Do I need an exact birth time?', a:'An exact birth time provides the most accurate reading, especially for the Hour Pillar which influences career and relationships. If unknown, we default to noon.' },
                     { q:'How is my data handled?', a:'Your privacy is paramount. All calculations happen entirely in your browser — no data is sent to any server. We never store or share your birth information.' },
+                    { q:'Can I check compatibility with my partner?', a:'Yes! After getting your reading, visit our Love Compatibility page for a detailed analysis of how your elements interact with a partner\'s chart. Understanding the Five Element dynamics can deepen your relationship insights.' },
+                    { q:'What is a Day Master in Bazi?', a:'Your Day Master (日主, rì zhǔ) is the Heavenly Stem of your birth day pillar. It represents your core personality, strengths, and challenges. MysticSage provides a detailed analysis of your Day Master type (Wood, Fire, Earth, Metal, or Water).' },
+                    { q:'Is there a mobile app available?', a:'MysticSage is fully optimized for mobile browsers. Simply visit mystic8zi.top on your phone or tablet — no app download needed. All features including chart calculation, readings, and knowledge articles work seamlessly on any device.' },
+                    { q:'How often should I get a reading?', a:'Your Bazi chart is based on your birth date and remains the same throughout your life. However, as you grow and face new situations, revisiting your reading can offer fresh perspectives. We recommend checking your chart annually or during major life transitions.' },
+                    { q:'What\'s the difference between Bazi and Western astrology?', a:'While Western astrology focuses on planetary positions and zodiac signs, Bazi (Four Pillars of Destiny) is based on Chinese calendar systems — Heavenly Stems and Earthly Branches. Bazi provides a different lens focusing on elemental balance and cyclical time analysis.' },
+                    { q:'Can Bazi predict my wealth and career success?', a:'Bazi can indicate your natural talents and favorable career directions based on your element composition. The Wealth Element (财星, cái xīng) and Officer Element (官星, guān xīng) in your chart offer insights into financial and professional potential. However, personal effort and environment are equally important for success.' },
                   ].map((faq, i) => (
                     <details key={i} className="group bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-lg border border-white/[0.10] rounded-xl overflow-hidden">
                       <summary className="px-5 py-4 cursor-pointer text-sm font-medium text-[#e8dcc8] flex items-center gap-2 hover:bg-white/[0.02] transition-colors list-none [&::-webkit-details-marker]:hidden">
@@ -298,6 +413,27 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+
+              {/* Share & Stay Connected */}
+              <div className="mt-16 text-center">
+                <div className="max-w-xl mx-auto bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl border border-white/[0.10] rounded-2xl p-8 shadow-lg shadow-black/30">
+                  <h2 className="text-xl font-bold gold-text mb-3">Share & Stay Connected</h2>
+                  <p className="text-[#9b8e7a] text-xs max-w-md mx-auto mb-6">Help others discover ancient wisdom — share MysticSage with friends</p>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <button onClick={() => window.open('https://twitter.com/intent/tweet?text=Discover your Bazi destiny with this free Chinese astrology reading!&url=https://mystic8zi.top', '_blank','width=600,height=400')}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-[#e8dcc8] transition-all">𝕏 Twitter</button>
+                    <button onClick={() => window.open('https://www.facebook.com/sharer/sharer.php?u=https://mystic8zi.top', '_blank','width=600,height=400')}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-[#e8dcc8] transition-all">f Facebook</button>
+                    <button onClick={() => window.open('https://wa.me/?text=Check out this free Bazi reading site https://mystic8zi.top', '_blank','width=600,height=400')}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-[#e8dcc8] transition-all">💬 WhatsApp</button>
+                    <button onClick={() => navigator.clipboard.writeText('https://mystic8zi.top').then(() => alert('Link copied!'))}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-[#e8dcc8] transition-all">📋 Copy Link</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Activity Feed — 右下角固定浮层，前端展示文案，非真实用户数据 */}
+              <LiveActivityFeed />
             </>
           )}
 
