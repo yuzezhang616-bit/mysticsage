@@ -193,6 +193,18 @@ details[open] summary {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ========== 大卡片滚动渐入 ========== */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ========== Staggered entrance animations ========== */
 .stagger-1 { animation: fadeSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
 .stagger-2 { animation: fadeSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; }
@@ -240,4 +252,101 @@ details[open] summary {
   [class*="bg-"] { background: transparent !important; border-color: #ddd !important; }
   .mystical-border { border-width: 1px !important; }
   @page { margin: 1.5cm; }
+}
+
+/* ========== 滚动进度条 ========== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #d4af37, #f0d68a, #d4af37);
+  z-index: 999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* ========== 返回顶部 ========== */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+/* ========== Hero 粒子 ========== */
+.particle-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #d4af37;
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle linear infinite;
+}
+@keyframes float-particle {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% {
+    transform: translateY(-10vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+/* ========== 统计数字动画 ========== */
+.stat-value {
+  display: inline-block;
+}
+
+/* ========== 卡片悬浮加强 ========== */
+.glass-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(212, 175, 55, 0.08);
+}
+
+/* ========== Testimonials 卡片包裹 ========== */
+.testimonials-wrapper .feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.testimonials-wrapper .feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.1);
 }

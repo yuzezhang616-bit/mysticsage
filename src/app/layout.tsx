@@ -26,7 +26,10 @@ const notoSerifSC = Noto_Serif_SC({
 
 // ⚠️ 首页专用metadata（强SEO标题）
 // 子页面请通过 layout.tsx 或 generateMetadata 自行覆盖
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mystic8zi.top';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Free Bazi Reading Online — Chinese Astrology & Fortune Telling | MysticSage",
   description:
     "Free online Bazi (Eight Characters) reading based on 5,000-year-old Chinese metaphysics. Calculate your Four Pillars of Destiny, check Five Elements balance, and get personalized insights — no signup required, all in your browser.",
